@@ -7,6 +7,7 @@ import { ShortcutsModal } from './components/ShortcutsModal';
 import { OverviewModal } from './components/OverviewModal';
 
 import { Slide1Cover } from './components/slides/Slide1Cover';
+import { Slide2Agenda } from './components/slides/Slide2Agenda';
 import { Slide2Business } from './components/slides/Slide2Business';
 import { Slide3Market } from './components/slides/Slide3Market';
 import { Slide4Funnel } from './components/slides/Slide4Funnel';
@@ -60,24 +61,26 @@ export const App: React.FC = () => {
       case 1:
         return <Slide1Cover onNext={nextSlide} />;
       case 2:
-        return <Slide2Business />;
+        return <Slide2Agenda onSelectSlide={(s) => goToSlide(s)} />;
       case 3:
-        return <Slide3Market />;
+        return <Slide2Business />;
       case 4:
-        return <Slide4Funnel />;
+        return <Slide3Market />;
       case 5:
-        return <Slide5Void />;
+        return <Slide4Funnel />;
       case 6:
-        return <Slide6Org />;
+        return <Slide5Void />;
       case 7:
-        return <Slide7Economics />;
+        return <Slide6Org />;
       case 8:
-        return <Slide8AIStrategy />;
+        return <Slide7Economics />;
       case 9:
-        return <Slide9TheMove />;
+        return <Slide8AIStrategy />;
       case 10:
-        return <Slide10Conclusion />;
+        return <Slide9TheMove />;
       case 11:
+        return <Slide10Conclusion />;
+      case 12:
         return <Slide11ThankYou onRestart={() => goToSlide(1, 'prev')} />;
       default:
         return <Slide1Cover onNext={nextSlide} />;

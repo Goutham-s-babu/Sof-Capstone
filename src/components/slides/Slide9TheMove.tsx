@@ -121,7 +121,7 @@ export const Slide9TheMove: React.FC = () => {
       {/* Footer */}
       <div className="flex items-center justify-between text-[11px] text-[#857B74] tracking-wider uppercase pt-2 border-t border-[#E6DFD5]">
         <span>SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG</span>
-        <span>09</span>
+        <span>10</span>
       </div>
     </div>
   );

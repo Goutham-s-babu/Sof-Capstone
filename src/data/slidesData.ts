@@ -31,13 +31,42 @@ export const SLIDES_METADATA: SlideData[] = [
   },
   {
     id: 2,
+    slug: 'agenda',
+    category: 'EXECUTIVE AGENDA · TABLE OF CONTENTS',
+    title: 'Executive Agenda: What This Capstone Covers',
+    subtitle: 'From on-ground business model reality and unit economics to an empirical, hurdle-tested AI ordering strategy.',
+    footnote: 'Term 1 Capstone Deliverable Architecture · 10 core sections across 4 research phases',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '02',
+    theme: 'charcoal',
+    notes: {
+      timeCode: '0:45 – 1:15 | Agenda & Roadmap',
+      script:
+        'To guide our presentation today, our research is structured across four key phases: First, we examine Beyondburg’s business model and the broader food services market. Second, we map the customer funnel and identify the peak-hour ordering void. Third, we establish the unit economics and organizational governance. Finally, we evaluate our proposed AI self-ordering pilot, stress-test it across three sensitivity scenarios, and present our empirical recommendation. Let us begin with Section 1: What It Is.',
+      keyPoints: [
+        'Phase 1: Proposition & Market Context (Sections 1 & 2)',
+        'Phase 2: Customer Funnel & The Void Question (Sections 3 & 4)',
+        'Phase 3: Governance & Unit Economics (Sections 5 & 6)',
+        'Phase 4: AI Strategy Pilot & Sensitivity Scenarios (Sections 7, 8, 9 & 10)'
+      ],
+      likelyQuestions: [
+        {
+          question: 'Why structure the analysis in this sequence?',
+          suggestedAnswer:
+            'This sequence follows the standard consulting problem-solving hierarchy: understanding the baseline business and market before diagnosing operational bottlenecks, evaluating economics, and testing a technological intervention.'
+        }
+      ]
+    }
+  },
+  {
+    id: 3,
     slug: 'what-it-is',
     category: '1 · WHAT IT IS',
     title: 'A premium burger and deli proposition built on ingredients',
     subtitle: 'Beyondburg’s public brand story highlights speciality-butchery meat, brioche buns and fresh vegetables.',
     footnote: 'Sources: Beyondburg website; field interview with Operations Manager Mohammed Aslam. Cost percentages are manager-reported.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '02',
+    footerRight: '03',
     theme: 'charcoal',
     notes: {
       timeCode: '0:45 – 1:30 | Business Proposition',
@@ -58,14 +87,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 3,
+    id: 4,
     slug: 'the-market',
     category: '2 · THE MARKET',
     title: 'A ₹6.96 lakh crore food-service market—but premium burgers are a niche',
     subtitle: 'The opportunity is not to capture all of India’s food market; it is to win a specific urban customer and occasion.',
     footnote: 'Sources: IBEF/Kearney–Swiggy (Nov 2025); KPMG India CX Report 2025; public menu listings checked 11 Oct 2026.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '03',
+    footerRight: '04',
     theme: 'charcoal',
     notes: {
       timeCode: '1:30 – 2:15 | Market Context & Competitive Landscape',
@@ -86,14 +115,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 4,
+    id: 5,
     slug: 'how-it-sells-and-speaks',
     category: '3 · HOW IT SELLS AND SPEAKS',
     title: 'Discovery brings attention; checkout must convert it',
     subtitle: 'The funnel is a planning example, not measured Beyondburg conversion. AOV uses the Operations Manager\'s reported ₹1,127.',
     footnote: 'This is not a current sales estimate. Use actual menu views, order starts and POS paid orders to calculate the real conversion rate.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '04',
+    footerRight: '05',
     theme: 'charcoal',
     notes: {
       timeCode: '2:15 – 3:00 | Channel Funnel & Conversion Dynamics',
@@ -114,14 +143,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 5,
+    id: 6,
     slug: 'the-void-question',
     category: '4 · THE VOID QUESTION',
     title: 'How much time is lost—and what could it be worth?',
     subtitle: 'The manager identified decision and billing delays; baseline queue duration and abandoned orders have not been measured.',
     footnote: 'Recovered orders are hypothetical; only count them if baseline data shows abandonment and the pilot demonstrably reduces it.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '05',
+    footerRight: '06',
     theme: 'charcoal',
     notes: {
       timeCode: '3:00 – 3:45 | Bottleneck Identification & Time Value',
@@ -142,14 +171,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 6,
+    id: 7,
     slug: 'the-organisation',
     category: '5 · THE ORGANISATION',
     title: 'SOP-led operations need clear ownership for the pilot',
     subtitle: 'The hierarchy is a provisional field-based map; pilot accountability is a proposed operating model.',
     footnote: 'The chart shows the working structure from field discussion—not a verified formal organisation chart.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '06',
+    footerRight: '07',
     theme: 'charcoal',
     notes: {
       timeCode: '3:45 – 4:30 | Operational Governance & RACI',
@@ -170,14 +199,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 7,
+    id: 8,
     slug: 'the-numbers-that-matter',
     category: '6 · THE NUMBERS THAT MATTER · ESTIMATES',
     title: 'Show contribution per burger—not an undefined residual',
     subtitle: 'Assume the 25–30% line represents other VARIABLE costs, not all overheads. Validate this classification with management.',
     footnote: 'Ingredient cost is manager-reported. Other variable costs and 35% midpoint margin are assumptions, not verified company data.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '07',
+    footerRight: '08',
     theme: 'charcoal',
     notes: {
       timeCode: '4:30 – 5:15 | Unit Economics & Statutory Context',
@@ -198,14 +227,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 8,
+    id: 9,
     slug: 'where-intelligence-changes-the-game',
     category: '7 · WHERE INTELLIGENCE CHANGES THE GAME',
     title: 'Implement AI-assisted guided self-ordering',
     subtitle: 'Deploy a controlled 4-screen pilot with an AI menu assistant, staff oversight and measurable guardrails.',
     footnote: 'Implementation includes menu/POS integration, privacy notice, fallback mode, staff training and vendor quote validation.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '08',
+    footerRight: '09',
     theme: 'charcoal',
     notes: {
       timeCode: '5:15 – 6:00 | Technology Architecture & Hurdle Rate',
@@ -226,14 +255,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 9,
+    id: 10,
     slug: 'the-move',
     category: 'THE MOVE',
     title: 'Pilot AI-assisted self-ordering at rush periods; scale only if contribution improves',
     subtitle: 'All calculations use ₹1,127 reported AOV, 35% assumed contribution margin and ₹20,000 monthly cost hurdle. Uplift is hypothetical.',
     footnote: 'ASSUMPTIONS: 2,000 exposed orders; 2–8% uplift and 35% margin unverified. | CONSISTENCY CHECK: ₹20k cost needs ₹57,143 sales ≈ 51 orders at ₹1,127 AOV.',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '09',
+    footerRight: '10',
     theme: 'charcoal',
     notes: {
       timeCode: '6:00 – 6:45 | Scenario Sensitivity & Decision Gates',
@@ -254,14 +283,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 10,
+    id: 11,
     slug: 'conclusion',
     category: 'CONCLUSION',
     title: 'Premium taste is the promise.\nReliable execution is the proof.',
     subtitle: 'Beyondburg sits in a growing food-service market, but the burger-only market size is not reliably established here.\nThe next move is a measured self-service pilot—not an assumption-led rollout.',
     footnote: 'Field interview • MCA FY2024 accounts • Redseer/Kearney-Swiggy • KPMG • public menus',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '10',
+    footerRight: '11',
     theme: 'charcoal',
     notes: {
       timeCode: '6:45 – 7:30 | Executive Synthesis',
@@ -282,14 +311,14 @@ export const SLIDES_METADATA: SlideData[] = [
     }
   },
   {
-    id: 11,
+    id: 12,
     slug: 'thank-you',
     category: 'TERM 1 CAPSTONE · FIELD RESEARCH & ACKNOWLEDGMENTS',
     title: 'Thank You.\nGrounded in field observation, operational reality, and empirical research.',
     subtitle: 'Special thanks to Beyondburg Palarivattom, Ops Head Mohammed Aslam, Store Manager Michael, and School of Future evaluators.',
     footnote: 'Field research conducted at Beyondburg Palarivattom, Kochi · On-site interviews and audits',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
-    footerRight: '11',
+    footerRight: '12',
     theme: 'charcoal',
     notes: {
       timeCode: '7:30 – 8:00 | Field Acknowledgments & Q&A',

@@ -136,7 +136,7 @@ export const Slide8AIStrategy: React.FC = () => {
         </p>
         <div className="flex items-center justify-between text-[11px] text-[#857B74] tracking-wider uppercase pt-2 border-t border-[#E6DFD5]">
           <span>SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG</span>
-          <span>08</span>
+          <span>09</span>
         </div>
       </div>
     </div>

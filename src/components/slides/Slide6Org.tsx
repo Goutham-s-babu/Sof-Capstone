@@ -110,7 +110,7 @@ export const Slide6Org: React.FC = () => {
 
         <div className="flex items-center justify-between text-[11px] text-[#857B74] tracking-wider uppercase pt-2 border-t border-[#E6DFD5]">
           <span>SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG</span>
-          <span>06</span>
+          <span>07</span>
         </div>
       </div>
     </div>

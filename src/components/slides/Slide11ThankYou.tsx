@@ -175,7 +175,7 @@ export const Slide11ThankYou: React.FC<Slide11ThankYouProps> = ({ onRestart }) =
       {/* Footer */}
       <div className="z-10 flex items-center justify-between text-[11px] sm:text-xs text-[#857B74] tracking-wider uppercase pt-3.5 border-t border-[#E2DDD4]">
         <span>SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG</span>
-        <span className="font-bold text-[#BD4F19]">11</span>
+        <span className="font-bold text-[#BD4F19]">12</span>
       </div>
     </div>
   );
