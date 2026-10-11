@@ -57,11 +57,11 @@ export const Slide1Cover: React.FC<Slide1CoverProps> = () => {
             </div>
 
             {/* Logo Card */}
-            <div className="bg-[#FAF8F5] border border-[#EAE4DC] rounded-xl p-8 flex items-center justify-center my-3">
+            <div className="bg-[#FAF8F5] border border-[#EAE4DC] rounded-xl py-9 px-8 flex items-center justify-center my-3 shadow-inner">
               <img
-                src="/assets/beyondburg-logo.png"
-                alt="Beyondburg"
-                className="h-10 sm:h-12 w-auto object-contain"
+                src="/assets/beyondburg-logo.svg"
+                alt="Beyondburg Official Wordmark"
+                className="w-full max-w-[300px] h-14 sm:h-16 object-contain"
               />
             </div>
 
