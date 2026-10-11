@@ -31,29 +31,30 @@ export const SLIDES_METADATA: SlideData[] = [
   },
   {
     id: 2,
-    slug: 'agenda',
-    category: 'EXECUTIVE AGENDA · TABLE OF CONTENTS',
-    title: 'Executive Agenda: What This Capstone Covers',
-    subtitle: 'From on-ground business model reality and unit economics to an empirical, hurdle-tested AI ordering strategy.',
-    footnote: 'Term 1 Capstone Deliverable Architecture · 10 core sections across 4 research phases',
+    slug: 'table-of-contents',
+    category: 'TERM 1 CAPSTONE · OUTLINE',
+    title: 'Table of Contents',
+    subtitle: 'Key topics and analytical areas covered in this capstone presentation.',
+    footnote: 'Presentation outline · 10 core sections',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
     footerRight: '02',
     theme: 'charcoal',
     notes: {
-      timeCode: '0:45 – 1:15 | Agenda & Roadmap',
+      timeCode: '0:45 – 1:15 | Table of Contents',
       script:
-        'To guide our presentation today, our research is structured across four key phases: First, we examine Beyondburg’s business model and the broader food services market. Second, we map the customer funnel and identify the peak-hour ordering void. Third, we establish the unit economics and organizational governance. Finally, we evaluate our proposed AI self-ordering pilot, stress-test it across three sensitivity scenarios, and present our empirical recommendation. Let us begin with Section 1: What It Is.',
+        'To guide our presentation, here is the table of contents covering the 10 core sections of this capstone: starting with the business proposition and market analysis, followed by customer journey and operational friction, store governance and unit economics, and concluding with our proposed AI self-ordering pilot, sensitivity scenarios, and field research. Let us proceed to Section 1.',
       keyPoints: [
-        'Phase 1: Proposition & Market Context (Sections 1 & 2)',
-        'Phase 2: Customer Funnel & The Void Question (Sections 3 & 4)',
-        'Phase 3: Governance & Unit Economics (Sections 5 & 6)',
-        'Phase 4: AI Strategy Pilot & Sensitivity Scenarios (Sections 7, 8, 9 & 10)'
+        'Sections 01–02: What It Is & The Market',
+        'Sections 03–04: How It Sells and Speaks & The Void Question',
+        'Sections 05–06: The Organisation & The Numbers That Matter',
+        'Sections 07–08: Where Intelligence Changes the Game & The Move',
+        'Sections 09–10: Conclusion & Field Research Acknowledgments'
       ],
       likelyQuestions: [
         {
-          question: 'Why structure the analysis in this sequence?',
+          question: 'What is the logical flow of this deck?',
           suggestedAnswer:
-            'This sequence follows the standard consulting problem-solving hierarchy: understanding the baseline business and market before diagnosing operational bottlenecks, evaluating economics, and testing a technological intervention.'
+            'A structured progression from business model baseline and market context to operational bottleneck diagnosis, financial validation, and a testable technological pilot.'
         }
       ]
     }
