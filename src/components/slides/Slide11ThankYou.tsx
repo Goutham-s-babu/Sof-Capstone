@@ -38,7 +38,7 @@ export const Slide11ThankYou: React.FC<Slide11ThankYouProps> = ({ onRestart }) =
           </div>
 
           <p className="text-xs sm:text-sm text-[#574E4A] leading-relaxed">
-            Special thanks to <strong className="text-[#1C1917] font-semibold">Beyondburg Palarivattom</strong>, Operations Manager <strong className="text-[#1C1917] font-semibold">Mohammed Aslam</strong>, the on-ground store crew, and the <strong className="text-[#1C1917] font-semibold">School of Future</strong> faculty and evaluators.
+            Special thanks to <strong className="text-[#1C1917] font-semibold">Beyondburg Palarivattom</strong>, Operations Head <strong className="text-[#1C1917] font-semibold">Mohammed Aslam</strong>, Store Manager <strong className="text-[#1C1917] font-semibold">Michael</strong>, the on-ground store crew, and the <strong className="text-[#1C1917] font-semibold">School of Future</strong> faculty and evaluators.
           </p>
 
           {/* Field Research Summary Pillars */}
@@ -56,9 +56,9 @@ export const Slide11ThankYou: React.FC<Slide11ThankYouProps> = ({ onRestart }) =
             <div className="p-3.5 rounded-xl bg-white border border-[#DFD7CB] shadow-xs flex items-start gap-3">
               <Users className="w-4 h-4 text-[#BD4F19] mt-0.5 shrink-0" />
               <div>
-                <div className="text-xs font-bold text-[#1C1917]">Operational Management Interview</div>
+                <div className="text-xs font-bold text-[#1C1917]">Store & Ops Management Interviews</div>
                 <div className="text-[11px] text-[#574E4A] leading-tight mt-0.5">
-                  In-depth dialogue on 35–40% food costs, 77% dine-in mix, and peak-hour checkout bottlenecks.
+                  In-depth dialogue with Ops Head Mohammed Aslam and Store Manager Michael on unit economics and operations.
                 </div>
               </div>
             </div>
@@ -91,13 +91,14 @@ export const Slide11ThankYou: React.FC<Slide11ThankYouProps> = ({ onRestart }) =
         {/* Right Column (7 cols): 2x2 Editorial Photo Mosaic of Real Store Visits */}
         <div className="lg:col-span-7">
           <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
-            {/* Photo 1: Author in front of counter */}
+            {/* Photo 1: Author clearly visible in front of counter */}
             <div className="group relative rounded-xl overflow-hidden bg-white border border-[#DFD7CB] shadow-sm flex flex-col">
               <div className="aspect-[4/3] w-full overflow-hidden bg-[#EFECE4]">
                 <img
                   src="/assets/field-author-visit.jpg"
-                  alt="Capstone Field Visit at Beyondburg Counter"
-                  className="w-full h-full object-cover object-top group-hover:scale-103 transition-transform duration-500"
+                  alt="Author Field Visit at Beyondburg Palarivattom Counter"
+                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                  style={{ objectPosition: 'center 85%' }}
                 />
               </div>
               <div className="p-2.5 bg-white border-t border-[#EFECE4]">
@@ -105,56 +106,57 @@ export const Slide11ThankYou: React.FC<Slide11ThankYouProps> = ({ onRestart }) =
                   Field Visit & Counter Audit
                 </div>
                 <div className="text-[10px] text-[#857B74] truncate">
-                  Palarivattom store front & ordering desk
+                  Author on-site at Palarivattom ordering desk
                 </div>
               </div>
             </div>
 
-            {/* Photo 2: Manager Interview */}
+            {/* Photo 2: Store Manager Michael */}
             <div className="group relative rounded-xl overflow-hidden bg-white border border-[#DFD7CB] shadow-sm flex flex-col">
               <div className="aspect-[4/3] w-full overflow-hidden bg-[#EFECE4]">
                 <img
                   src="/assets/field-interview-manager.jpg"
-                  alt="Operations Manager Mohammed Aslam Interview"
+                  alt="Store Manager Michael Interview"
                   className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                 />
               </div>
               <div className="p-2.5 bg-white border-t border-[#EFECE4]">
                 <div className="text-[11px] font-bold text-[#1C1917] truncate">
-                  Operations Manager Interview
+                  Store Manager Interview
                 </div>
                 <div className="text-[10px] text-[#857B74] truncate">
-                  Field insights with Mohammed Aslam
+                  Field dialogue with Store Manager Michael
                 </div>
               </div>
             </div>
 
-            {/* Photo 3: Team Discussion Table */}
+            {/* Photo 3: Ops Head Mohammed Aslam in Group Discussion */}
             <div className="group relative rounded-xl overflow-hidden bg-white border border-[#DFD7CB] shadow-sm flex flex-col">
               <div className="aspect-[4/3] w-full overflow-hidden bg-[#EFECE4]">
                 <img
                   src="/assets/field-team-discussion.jpg"
-                  alt="Research Team Discussion at Beyondburg"
+                  alt="Operations Review with Ops Head Mohammed Aslam"
                   className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                 />
               </div>
               <div className="p-2.5 bg-white border-t border-[#EFECE4]">
                 <div className="text-[11px] font-bold text-[#1C1917] truncate">
-                  On-Site Group Discussion
+                  Ops Head Strategy Session
                 </div>
                 <div className="text-[10px] text-[#857B74] truncate">
-                  Dine-in floor review & qualitative feedback
+                  Operations review with Ops Head Mohammed Aslam
                 </div>
               </div>
             </div>
 
-            {/* Photo 4: Counter Architecture & Kitchen */}
+            {/* Photo 4: Counter Architecture & Kitchen Flow */}
             <div className="group relative rounded-xl overflow-hidden bg-white border border-[#DFD7CB] shadow-sm flex flex-col">
               <div className="aspect-[4/3] w-full overflow-hidden bg-[#EFECE4]">
                 <img
                   src="/assets/field-store-counter.jpg"
                   alt="Store Architecture & Service Counter"
                   className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                  style={{ objectPosition: 'center 75%' }}
                 />
               </div>
               <div className="p-2.5 bg-white border-t border-[#EFECE4]">

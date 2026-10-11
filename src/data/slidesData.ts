@@ -286,7 +286,7 @@ export const SLIDES_METADATA: SlideData[] = [
     slug: 'thank-you',
     category: 'TERM 1 CAPSTONE · FIELD RESEARCH & ACKNOWLEDGMENTS',
     title: 'Thank You.\nGrounded in field observation, operational reality, and empirical research.',
-    subtitle: 'Special thanks to Beyondburg Palarivattom, Operations Manager Mohammed Aslam, and School of Future evaluators.',
+    subtitle: 'Special thanks to Beyondburg Palarivattom, Ops Head Mohammed Aslam, Store Manager Michael, and School of Future evaluators.',
     footnote: 'Field research conducted at Beyondburg Palarivattom, Kochi · On-site interviews and audits',
     footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
     footerRight: '11',
@@ -294,9 +294,9 @@ export const SLIDES_METADATA: SlideData[] = [
     notes: {
       timeCode: '7:30 – 8:00 | Field Acknowledgments & Q&A',
       script:
-        'Thank you very much evaluators. This capstone was built upon firsthand on-site research conducted at Beyondburg Palarivattom, including extensive interviews with Operations Manager Mohammed Aslam, floor observations of counter order dynamics, and team review. I am now open for your questions, methodological defense, and strategic discussion.',
+        'Thank you very much evaluators. This capstone was built upon firsthand on-site research conducted at Beyondburg Palarivattom, including an interview with Store Manager Michael, operational review with Ops Head Mohammed Aslam, floor observations of counter order dynamics, and team review. I am now open for your questions, methodological defense, and strategic discussion.',
       keyPoints: [
-        'Fieldwork: Conducted on-site at Palarivattom with Mohammed Aslam and store crew.',
+        'Fieldwork: Conducted on-site at Palarivattom with Ops Head Mohammed Aslam, Store Manager Michael, and store crew.',
         'Visual evidence: Authentic counter audits, order flow review, and group field research.',
         'Readiness: Prepared to defend all cost assumptions, unit economics, and pilot criteria.'
       ],
