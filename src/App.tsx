@@ -16,6 +16,7 @@ import { Slide7Economics } from './components/slides/Slide7Economics';
 import { Slide8AIStrategy } from './components/slides/Slide8AIStrategy';
 import { Slide9TheMove } from './components/slides/Slide9TheMove';
 import { Slide10Conclusion } from './components/slides/Slide10Conclusion';
+import { Slide11ThankYou } from './components/slides/Slide11ThankYou';
 
 export const App: React.FC = () => {
   const totalSlides = SLIDES_METADATA.length;
@@ -36,10 +37,20 @@ export const App: React.FC = () => {
     setShowOverview,
   } = usePresentationNav({ totalSlides });
 
-  // Preload key brand logo
+  // Preload key brand logo and authentic field photos
   useEffect(() => {
-    const img = new Image();
-    img.src = '/assets/beyondburg-logo.png';
+    const imagesToPreload = [
+      '/assets/beyondburg-logo.svg',
+      '/assets/beyondburg-logo.png',
+      '/assets/field-author-visit.jpg',
+      '/assets/field-interview-manager.jpg',
+      '/assets/field-team-discussion.jpg',
+      '/assets/field-store-counter.jpg',
+    ];
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
   }, []);
 
   const activeSlideData = SLIDES_METADATA[currentSlide - 1];
@@ -66,6 +77,8 @@ export const App: React.FC = () => {
         return <Slide9TheMove />;
       case 10:
         return <Slide10Conclusion />;
+      case 11:
+        return <Slide11ThankYou onRestart={() => goToSlide(1, 'prev')} />;
       default:
         return <Slide1Cover onNext={nextSlide} />;
     }

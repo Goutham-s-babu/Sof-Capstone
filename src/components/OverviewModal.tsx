@@ -47,8 +47,8 @@ export const OverviewModal: React.FC<OverviewModalProps> = ({
           </button>
         </div>
 
-        {/* Grid of 10 Slides */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 py-6 overflow-y-auto">
+        {/* Grid of Slides */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4 py-6 overflow-y-auto">
           {SLIDES_METADATA.map((slide) => {
             const isSelected = slide.id === currentSlide;
             return (
