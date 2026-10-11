@@ -13,6 +13,10 @@ export interface SlideData {
   slug: string;
   title: string;
   subtitle?: string;
+  category?: string;
+  footnote?: string;
+  footerLeft?: string;
+  footerRight?: string;
   theme: 'charcoal' | 'ivory';
   notes: SpeakerNote;
 }

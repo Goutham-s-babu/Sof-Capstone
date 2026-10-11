@@ -11,6 +11,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [showNotes, setShowNotes] = useState<boolean>(false);
   const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
+  const [showOverview, setShowOverview] = useState<boolean>(false);
   const [controlsVisible, setControlsVisible] = useState<boolean>(true);
 
   const lastNavTime = useRef<number>(0);
@@ -125,14 +126,30 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
         'PageDown',
         'PageUp',
         'Home',
-        'End'
+        'End',
       ];
       if (navKeys.includes(e.key)) {
         e.preventDefault();
       }
 
+      // Number keys 1-9, 0 to jump directly to slide
+      if (e.key >= '1' && e.key <= '9') {
+        const num = parseInt(e.key, 10);
+        if (num <= totalSlides) {
+          e.preventDefault();
+          goToSlide(num);
+          return;
+        }
+      }
+      if (e.key === '0' && totalSlides >= 10) {
+        e.preventDefault();
+        goToSlide(10);
+        return;
+      }
+
       switch (e.key) {
         case 'ArrowRight':
+        case 'ArrowDown':
         case 'PageDown':
         case ' ':
         case 'Spacebar':
@@ -140,6 +157,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
           break;
 
         case 'ArrowLeft':
+        case 'ArrowUp':
         case 'PageUp':
         case 'Backspace':
           prevSlide();
@@ -165,6 +183,14 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
           setShowNotes((prev) => !prev);
           break;
 
+        case 'o':
+        case 'O':
+        case 'g':
+        case 'G':
+          e.preventDefault();
+          setShowOverview((prev) => !prev);
+          break;
+
         case '?':
         case 'h':
         case 'H':
@@ -178,6 +204,8 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
             setShowNotes(false);
           } else if (showShortcuts) {
             setShowShortcuts(false);
+          } else if (showOverview) {
+            setShowOverview(false);
           }
           break;
 
@@ -195,9 +223,12 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
     prevSlide,
     firstSlide,
     lastSlide,
+    goToSlide,
     toggleFullscreen,
     showNotes,
-    showShortcuts
+    showShortcuts,
+    showOverview,
+    totalSlides,
   ]);
 
   // Mouse idle detection for elegant auto-fading controls
@@ -227,6 +258,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
     isFullscreen,
     showNotes,
     showShortcuts,
+    showOverview,
     controlsVisible,
     goToSlide,
     nextSlide,
@@ -236,6 +268,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
     toggleFullscreen,
     setShowNotes,
     setShowShortcuts,
-    setControlsVisible
+    setShowOverview,
+    setControlsVisible,
   };
 }

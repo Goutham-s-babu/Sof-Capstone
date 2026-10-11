@@ -1,107 +1,84 @@
 import React from 'react';
-import { ArrowRight, Radio } from 'lucide-react';
 
 interface Slide1CoverProps {
-  onNext: () => void;
+  onNext?: () => void;
 }
 
-export const Slide1Cover: React.FC<Slide1CoverProps> = ({ onNext }) => {
+export const Slide1Cover: React.FC<Slide1CoverProps> = () => {
   return (
-    <div className="w-full h-full flex flex-col justify-between p-8 md:p-14 lg:p-20 text-[#F7F4EE] bg-[#171717] overflow-hidden relative">
-      {/* Subtle background ambient warmth */}
-      <div className="absolute inset-0 bg-radial from-[#2a1e1e]/20 via-[#171717] to-[#171717] pointer-events-none" />
-
-      {/* Top Bar: Official Beyondburg Logo & Metadata */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-6 z-10 animate-fade-up">
-        <div className="flex items-center gap-5">
-          {/* Official Beyondburg logo preserved exactly in crisp white badge */}
-          <div className="bg-white px-4 py-2 rounded shadow-md border border-white/20 flex items-center justify-center">
-            <img
-              src="/assets/beyondburg-logo.png"
-              alt="Beyondburg Official Wordmark"
-              className="h-7 w-auto object-contain"
-            />
-          </div>
-          <div>
-            <span className="text-xs font-mono tracking-widest uppercase text-[#D8D3CA] block">
-              Palarivattom, Kochi
-            </span>
-            <span className="text-[11px] font-sans text-white/50 block">
-              Field Research & Assumption-Based Analysis
-            </span>
-          </div>
+    <div className="w-full h-full bg-[#0D172E] text-white flex flex-col justify-between p-10 md:p-14 lg:p-16 select-none relative overflow-hidden font-mono-consulting">
+      {/* Top Tag & Category */}
+      <div className="z-10">
+        <div className="text-xs md:text-sm font-semibold tracking-widest text-[#E59546] uppercase">
+          TERM 1 CAPSTONE · THE FULL READ
         </div>
-
-        <div className="hidden sm:flex items-center gap-3 text-xs font-mono text-[#D8D3CA]/80">
-          <span className="w-2 h-2 rounded-full bg-[#8D2929] animate-pulse" />
-          <span>Business Capstone Read</span>
-        </div>
+        <div className="w-10 h-0.5 bg-[#E59546] mt-2" />
       </div>
 
-      {/* Hero Layout: Editorial Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center z-10 my-auto py-4">
-        {/* Left Column: Bold Editorial Typography */}
+      {/* Main Content Split: Editorial Headline on Left, Brand Card on Right */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center z-10 my-auto">
+        {/* Left Column */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/5 border border-white/10 text-[#D8D3CA] text-xs font-mono uppercase tracking-wider animate-fade-up delay-100">
-            <span>Primary Strategic Investigation</span>
-          </div>
-
-          <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.08] animate-fade-up delay-150">
-            The Full Business Read
+          <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.08]">
+            Beyondburg: <br />
+            <span className="font-normal">premium taste, thin proof</span>
           </h1>
 
-          <p className="font-serif-display italic text-xl sm:text-2xl lg:text-3xl text-[#D8D3CA] font-normal leading-relaxed max-w-2xl animate-fade-up delay-200">
-            Reducing ordering friction without losing the premium experience
+          <p className="text-sm sm:text-base lg:text-lg text-[#BAC7D5] max-w-2xl leading-relaxed">
+            A Kochi burger brand read through its market, customer journey, unit economics and one testable strategic move.
           </p>
 
-          <div className="pt-4 border-t border-white/10 flex flex-wrap items-center gap-6 text-xs text-[#D8D3CA]/70 font-mono animate-fade-up delay-250">
-            <div>
-              <span className="text-white font-medium block">CORE RESEARCH QUESTION</span>
-              <span>Can self-service ordering accelerate service without diluting hospitality?</span>
-            </div>
+          <p className="text-xs sm:text-sm text-[#7E8B9B] tracking-wide pt-2">
+            Palarivattom, Kochi · Field interview + public research + labelled estimates
+          </p>
+
+          {/* 3 Metric Pills */}
+          <div className="flex flex-wrap items-center gap-3 pt-6">
+            <span className="px-3.5 py-1.5 rounded bg-[#F4B979] text-[#1A1108] font-bold text-xs sm:text-sm tracking-wide shadow-sm">
+              ₹390 IN-STORE
+            </span>
+            <span className="px-3.5 py-1.5 rounded bg-[#F4B979] text-[#1A1108] font-bold text-xs sm:text-sm tracking-wide shadow-sm">
+              35–40% INGREDIENTS
+            </span>
+            <span className="px-3.5 py-1.5 rounded bg-[#F4B979] text-[#1A1108] font-bold text-xs sm:text-sm tracking-wide shadow-sm">
+              4–5 SCREENS DISCUSSED
+            </span>
           </div>
         </div>
 
-        {/* Right Column: High-Quality Smash Burger Photograph */}
-        <div className="lg:col-span-5 flex justify-center animate-fade-up delay-200">
-          <div className="relative group w-full max-w-md lg:max-w-none">
-            {/* Framed Editorial Visual */}
-            <div className="relative overflow-hidden rounded-lg shadow-2xl border border-white/15 bg-black/40 aspect-[4/3] sm:aspect-[16/11]">
+        {/* Right Column: High-End Brand Box */}
+        <div className="lg:col-span-5 flex justify-center lg:justify-end">
+          <div className="w-full max-w-sm rounded-2xl border border-[#233E6E] bg-[#111F3B]/90 p-7 shadow-2xl relative flex flex-col justify-between">
+            {/* Pill top right */}
+            <div className="self-end mb-4">
+              <span className="px-3 py-1 rounded bg-[#F4B979] text-[#1A1108] font-bold text-xs tracking-wider uppercase">
+                KOCHI · SINCE 2017
+              </span>
+            </div>
+
+            {/* Logo Card */}
+            <div className="bg-white rounded-xl p-8 flex items-center justify-center my-3 shadow-inner">
               <img
-                src="/assets/smash-burger-hero.jpg"
-                alt="Beyondburg Gourmet Smash Burger"
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                loading="eager"
+                src="/assets/beyondburg-logo.png"
+                alt="Beyondburg"
+                className="h-10 sm:h-12 w-auto object-contain"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end text-xs font-mono text-white/90">
-                <div>
-                  <span className="text-white font-bold block text-sm">Signature Smash Burger</span>
-                  <span className="text-white/70 text-[11px]">Butchery Beef • Toasted Brioche • ₹390 Pre-Tax</span>
-                </div>
-                <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-[#8D2929] text-white">
-                  Field Verified
-                </span>
-              </div>
+            </div>
+
+            {/* Strategic Question */}
+            <div className="mt-6 pt-4 border-t border-[#1E365E]">
+              <p className="text-xs sm:text-sm text-[#CBD5E1] leading-relaxed text-center font-normal">
+                The question: can faster ordering improve value without diluting service?
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar: Remote Clicker Hint & Advance Trigger */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 border-t border-white/10 pt-6 z-10 text-xs animate-fade-up delay-300">
-        <div className="flex items-center gap-2.5 text-[#D8D3CA] font-mono bg-white/5 px-3.5 py-1.5 rounded border border-white/10">
-          <Radio className="w-3.5 h-3.5 text-[#8D2929] animate-pulse" />
-          <span>Use your presentation remote or arrow keys to navigate</span>
-        </div>
-
-        <button
-          onClick={onNext}
-          className="group flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-white hover:text-[#D8D3CA] transition-colors"
-        >
-          <span>Begin Presentation</span>
-          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-[#8D2929]" />
-        </button>
+      {/* Footer */}
+      <div className="z-10 flex items-center justify-between text-[11px] sm:text-xs text-[#64748B] tracking-wider uppercase pt-4 border-t border-[#1E365E]/50">
+        <span>SCHOOL OF FUTURE · TERM 1 CAPSTONE</span>
+        <span />
       </div>
     </div>
   );

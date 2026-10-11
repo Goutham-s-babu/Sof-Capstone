@@ -4,211 +4,279 @@ export const SLIDES_METADATA: SlideData[] = [
   {
     id: 1,
     slug: 'cover',
-    title: 'The Full Business Read',
-    subtitle: 'Reducing ordering friction without losing the premium experience',
+    category: 'TERM 1 CAPSTONE · THE FULL READ',
+    title: 'Beyondburg:\npremium taste, thin proof',
+    subtitle: 'A Kochi burger brand read through its market, customer journey, unit economics and one testable strategic move.',
+    footnote: 'Palarivattom, Kochi · Field interview + public research + labelled estimates',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE',
+    footerRight: '',
     theme: 'charcoal',
     notes: {
-      timeCode: '0:00 – 0:40 | Opening',
+      timeCode: '0:00 – 0:45 | Title & Context',
       script:
-        'Good morning, evaluators. My capstone asks one central question: can Beyondburg make ordering faster through AI-enabled self-service without weakening its premium customer experience? I studied the Palarivattom outlet in Kochi and conducted in-depth field research with Operations Manager Mohammed Aslam. Today, I present seven critical business readings and a disciplined strategic pilot proposal.',
+        'Good morning, evaluators. My capstone investigates Beyondburg, a premium gourmet burger and deli brand located in Palarivattom, Kochi. Founded in 2017, the brand is celebrated for high-quality smash burgers and hospitality. However, our primary strategic question is: can faster ordering improve value without diluting service? Today, we evaluate the market, customer journey, unit economics, and propose a disciplined, testable AI-assisted self-ordering pilot.',
       keyPoints: [
-        'Research site: Beyondburg Palarivattom, Kochi.',
-        'Primary source: Mohammed Aslam (Operations Manager).',
-        'Core tension: Efficiency of ordering vs. warmth of premium hospitality.',
-        'Total presentation runtime target: 6 minutes.'
+        'Site: Palarivattom, Kochi (operations manager interview + public data).',
+        'Key tension: Fast-casual ordering velocity vs. artisanal hospitality.',
+        'Core inquiry: Whether self-service ordering reduces friction without degrading customer touchpoints.'
       ],
       likelyQuestions: [
         {
-          question: 'Why did you select Beyondburg for this capstone study?',
+          question: 'What is the exact scope of this capstone?',
           suggestedAnswer:
-            'Beyondburg represents a rapidly growing premium QSR category in Kerala. Unlike standard fast-food chains that compete on speed alone, Beyondburg charges a premium for artisanal smash burgers and hospitality. That makes technology deployment especially high-stakes.'
+            'A rigorous field study of Beyondburg Palarivattom covering unit economics, customer journey bottlenecks, and an empirical framework to test self-service ordering before committing capital.'
         }
       ]
     }
   },
   {
     id: 2,
-    slug: 'business',
-    title: 'A Premium Burger Experience',
-    subtitle: 'Positioning, product craft and business model tensions',
-    theme: 'ivory',
+    slug: 'what-it-is',
+    category: '1 · WHAT IT IS',
+    title: 'A premium burger and deli proposition built on ingredients',
+    subtitle: 'Beyondburg’s public brand story highlights speciality-butchery meat, brioche buns and fresh vegetables.',
+    footnote: 'Sources: Beyondburg website; field interview with Operations Manager Mohammed Aslam. Cost percentages are manager-reported.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '02',
+    theme: 'charcoal',
     notes: {
-      timeCode: '0:40 – 1:20 | Business Model',
+      timeCode: '0:45 – 1:30 | Business Proposition',
       script:
-        'Beyondburg began as a modest kiosk in 2017 and has expanded into a distinctive brand. Its proposition centres on premium product quality: speciality-butchery meat, freshly baked brioche buns, and house-crafted sauces. Revenue flows across dine-in, takeaway, and delivery. In-store, the signature Smash Burger sells at ₹390 before tax. The operational challenge is that premium food craft requires deliberate pacing, yet modern diners demand frictionless ordering. Technology must reinforce hospitality, not dilute it.',
+        'Beyondburg originated as a kiosk in 2017 and has matured into a premium burger destination. The core offering is smash burgers, sandwiches, sides, and an elevated dine-in atmosphere, with the signature Smash Burger retailing at ₹390 before taxes. The business relies on word of mouth and social discovery, with manager-reported channel mix heavily weighted toward dine-in at 77%. The critical economic tension is that high ingredient costs (35–40%) leave a 60–65% gross margin that must absorb kitchen labour, high-street rent, utilities, and packaging.',
       keyPoints: [
-        'Brand heritage: Started as a kiosk in 2017 (per company website).',
-        'Product pillars: Butchery beef, house-baked brioche, fresh ingredients.',
-        'Core revenue categories: Burgers, deli sandwiches, sides, beverages, desserts.',
-        'Smash Burger in-store price: ₹390 pre-tax (verified field input).',
-        'Operating mandate: Balance culinary craft with operational velocity.'
+        'Offering: Artisanal smash burgers, deli sandwiches, sides; signature Smash Burger at ₹390 pre-tax.',
+        'Channels: 77% dine-in, 23% takeaway (manager-reported, un-audited).',
+        'Cost structure: 35–40% food cost leaves 60–65% to cover fixed operations.'
       ],
       likelyQuestions: [
         {
-          question: 'Are there other revenue streams beyond food and beverages?',
+          question: 'Are the cost percentages verified by audited financial statements?',
           suggestedAnswer:
-            'No additional revenue streams such as merchandise, royalties, or third-party catering were verified during field research. The business model is purely menu-driven across on-premise and off-premise channels.'
+            'No. Operations Manager Mohammed Aslam provided the 35–40% food cost estimate across the menu; it is manager-reported and not recipe-specific.'
         }
       ]
     }
   },
   {
     id: 3,
-    slug: 'market',
-    title: 'Competing Beyond Price',
-    subtitle: 'Comparative positioning and public price context in Kochi',
-    theme: 'ivory',
+    slug: 'the-market',
+    category: '2 · THE MARKET',
+    title: 'A ₹6.96 lakh crore food-service market—but premium burgers are a niche',
+    subtitle: 'The opportunity is not to capture all of India’s food market; it is to win a specific urban customer and occasion.',
+    footnote: 'Sources: IBEF/Kearney–Swiggy (Nov 2025); KPMG India CX Report 2025; public menu listings checked 11 Oct 2026.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '03',
+    theme: 'charcoal',
     notes: {
-      timeCode: '1:20 – 1:55 | Market & Competitors',
+      timeCode: '1:30 – 2:15 | Market Context & Competitive Landscape',
       script:
-        'In Kochi’s gourmet burger market, Beyondburg contends with key alternatives including The Burger Junction (TBJ) and The Burgery. While public online menu listings offer directional price signals, they are not directly comparable due to variations in aggregator commissions, portions, taxes, and promotional discounting. Beyondburg differentiates through an artisanal deli ambiance and smash-patty technique rather than aggressive discounting.',
+        'While India’s food services market is estimated at ₹6.96 lakh crore in 2025 with organized food service at 45–50% and QSR growing at 15–17% CAGR, premium gourmet burgers remain a focused urban niche. Beyondburg faces global chains like McDonald’s and Burger King for broad fast-food share, and local artisanal competitors like The Burger Junction and The Burgery in Kochi. With prices ranging from ₹317 to ₹470 across listings, KPMG data shows consumers will pay a premium only when food quality and service consistently deliver.',
       keyPoints: [
-        'Key competitors: The Burger Junction (TBJ) & The Burgery.',
-        'Directional pricing: Beyondburg ₹390 in-store Smash Burger (pre-tax); competitor prices vary by channel.',
-        'Convenience gap: Counter ordering with proposed self-service vs. conventional counters.',
-        'Data qualification: No matched basket study exists; public online prices cannot establish market share.'
+        'Macro market: ₹6.96L cr food-service market; organized share rising from 45–50% to ~55% by 2030.',
+        'Local rivals: TBJ (Cheese Burger ₹317) and The Burgery (Smash Down ₹420) vs Beyondburg Smash (₹470 listing).',
+        'Data discipline: No official burger-only TAM exists; analysis must be sized bottom-up.'
       ],
       likelyQuestions: [
         {
-          question: 'Why not compare delivery app prices directly?',
+          question: 'Why not size the national burger market directly?',
           suggestedAnswer:
-            'Aggregators apply markups, dynamic surge fees, packaging surcharges, and outlet-specific promotions. A rigorous academic comparison requires matched dine-in baskets, which have not yet been audited across all three.'
+            'No robust, audited public figure exists solely for gourmet burgers in India. Inventing a synthetic TAM would be methodologically unsound; Beyondburg must size its addressable market locally from the store level.'
         }
       ]
     }
   },
   {
     id: 4,
-    slug: 'void',
-    title: 'The Friction Happens Before the Food',
-    subtitle: 'Deconstructing the customer journey bottleneck',
-    theme: 'ivory',
+    slug: 'how-it-sells-and-speaks',
+    category: '3 · HOW IT SELLS AND SPEAKS',
+    title: 'Discovery brings attention; checkout must convert it',
+    subtitle: 'The funnel is a planning example, not measured Beyondburg conversion. AOV uses the Operations Manager\'s reported ₹1,127.',
+    footnote: 'This is not a current sales estimate. Use actual menu views, order starts and POS paid orders to calculate the real conversion rate.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '04',
+    theme: 'charcoal',
     notes: {
-      timeCode: '1:55 – 2:40 | The Customer Void',
+      timeCode: '2:15 – 3:00 | Channel Funnel & Conversion Dynamics',
       script:
-        'This is the analytical heart of the study. During my interview with Operations Manager Mohammed Aslam, he highlighted that customers frequently take considerable time to decide what to order and complete billing. Notice the critical distinction: Decision Time (browsing options, weighing customisations) vs. Transaction Time (keying items, payment verification). The delay is a reported management observation that has not yet been quantified with stopwatch studies. We cannot assume lost sales or queue abandonment without rigorous baseline measurement.',
+        'Slide 4 analyzes how marketing translates into revenue. We know customer discovery happens through Instagram and word of mouth. However, Beyondburg currently lacks tracked telemetry across the funnel from menu views to completed orders. In our illustrative cohort of 1,000 visits with an assumed 30% order start and 80% checkout completion, 240 paid orders at the reported ₹1,127 AOV generate ₹2,70,480. We must track POS and digital touchpoints to replace illustrative assumptions with measured conversion data.',
       keyPoints: [
-        '5-stage customer journey: Discover → Decide → Enter/Confirm → Pay → Receive.',
-        'Identified friction point: Extended time taken during menu choice and billing.',
-        'Cognitive load vs. POS lag: Decision time requires UX guidance; transaction time requires swift hardware.',
-        'Critical limitation: Delay has not yet been quantified; kitchen bottlenecks must not be conflated with ordering delays.'
+        'Funnel visibility: Discovery is active, but drop-offs between menu viewing and final payment are untracked.',
+        'Cohort math: 1,000 visits → 300 starts (30%) → 240 paid orders (80%) = 24% visit-to-paid conversion.',
+        'Revenue link: 240 orders × ₹1,127 reported AOV = ₹2,70,480 illustrative gross sales.'
       ],
       likelyQuestions: [
         {
-          question: 'Is there data proving customers leave because of slow queues?',
+          question: 'Is the 24% conversion rate an observed company metric?',
           suggestedAnswer:
-            'No. The Operations Manager identified decision and billing friction as a notable operational pain point, but queue abandonment and lost sales remain unquantified hypotheses that our proposed baseline phase must measure.'
+            'No, it is strictly an illustrative planning funnel. The recommendation is to instrument analytics and POS logs to measure actual drop-off rates.'
         }
       ]
     }
   },
   {
     id: 5,
-    slug: 'organisation',
-    title: 'Technology Must Fit the Operation',
-    subtitle: 'Working hierarchy, SOP discipline and pilot accountability',
-    theme: 'ivory',
+    slug: 'the-void-question',
+    category: '4 · THE VOID QUESTION',
+    title: 'How much time is lost—and what could it be worth?',
+    subtitle: 'The manager identified decision and billing delays; baseline queue duration and abandoned orders have not been measured.',
+    footnote: 'Recovered orders are hypothetical; only count them if baseline data shows abandonment and the pilot demonstrably reduces it.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '05',
+    theme: 'charcoal',
     notes: {
-      timeCode: '2:40 – 3:25 | Operating Model & Team',
+      timeCode: '3:00 – 3:45 | Bottleneck Identification & Time Value',
       script:
-        'Technology cannot succeed in isolation from organizational structure. The working hierarchy based on field discussion runs from Founder, through Operations & Finance, to Store Managers, and Frontline Staff. Standard Operating Procedures (SOPs) govern store decisions. For our proposed self-service pilot, accountability is sharply defined: the Operations Manager oversees pilot metrics, the Store Manager ensures daily execution, Frontline staff handle customer guidance and exceptions, and a designated tech owner handles uptime. Any affected staff must be retrained and redeployed, not simply displaced.',
+        'In field discussions, management noted that customers take substantial time deciding, navigating options, and completing billing. If we model an assumed baseline of 4.0 minutes per order and target a 15% reduction (saving 36 seconds), across 100 rush orders this releases 60 minutes of service capacity daily. If queue reduction genuinely recovers 10 abandoned orders at ₹1,127 AOV, that equates to ₹11,270 in sales and ₹3,945 in contribution daily. However, faster checkout must never compromise hospitality or increase order errors.',
       keyPoints: [
-        'Provisional hierarchy: Founder → Ops & Finance → Store Managers → Frontline Staff.',
-        'Status: Working structure from field discussions, not an audited statutory organogram.',
-        'SOP compliance: Frontline execution relies on standardised operating guidelines.',
-        'Pilot governance: 4 clear ownership roles with explicit escalation triggers.',
-        'Human factor: Redeployment and training prioritized over headcount elimination.'
+        'Friction void: Delay occurs in order entry and customer decision-making at counter.',
+        'Time release: 36 seconds saved per order across 100 daily rush orders releases 1 hour of operational capacity.',
+        'Financial recovery: 10 recovered orders = ₹11,270 sales, yielding ₹3,945 contribution at 35% margin.'
       ],
       likelyQuestions: [
         {
-          question: 'Will self-service kiosks lead to staff layoffs?',
+          question: 'Have walkaways been recorded at Palarivattom?',
           suggestedAnswer:
-            'The Operations Manager noted that the company would strive to offer affected employees alternative roles. In a hospitality-driven brand, reassigning staff from routine cashier duty to floor hospitality, table service, and order resolution protects the customer experience.'
+            'Baseline queue duration and abandoned orders have not yet been systematically measured. Our pilot begins with a time-stamping study of 100 orders across rush and non-rush hours to establish empirical baseline proof.'
         }
       ]
     }
   },
   {
     id: 6,
-    slug: 'economics',
-    title: 'Understand the Economics Before Scaling',
-    subtitle: 'Separating audited historical accounts from outlet-level estimates',
-    theme: 'ivory',
+    slug: 'the-organisation',
+    category: '5 · THE ORGANISATION',
+    title: 'SOP-led operations need clear ownership for the pilot',
+    subtitle: 'The hierarchy is a provisional field-based map; pilot accountability is a proposed operating model.',
+    footnote: 'The chart shows the working structure from field discussion—not a verified formal organisation chart.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '06',
+    theme: 'charcoal',
     notes: {
-      timeCode: '3:25 – 4:35 | Unit Economics & Financial Realities',
+      timeCode: '3:45 – 4:30 | Operational Governance & RACI',
       script:
-        'Slide 6 presents two separate financial lenses that must never be conflated. On the left: FY2024 MCA-filed statutory accounts show ₹12.01 lakh revenue, ₹11.58 lakh other expenses (with rent and utilities comprising 75%), yielding ₹43,380 profit before tax and ₹1,010 profit after tax. On the right: Manager-reported inputs for the Palarivattom outlet indicate ~2,300 monthly bills at ₹1,127 AOV, implying ₹25.92 lakh monthly sales (or ~₹3.11 crore annualized). These datasets reflect different reporting perimeters. Below: A pre-tax ₹390 Smash Burger with 35–40% general ingredient cost yields ₹234–₹253.50 remaining. This is NOT profit; it excludes labor, fees, and overhead.',
+        'Technology implementations fail without operational ownership. Beyondburg functions through a defined chain from Founder down to Operations & Finance, Store Managers, and the Frontline Team. For our proposed pilot, governance is clear: the Operations Manager acts as Pilot Owner setting targets and review triggers; the Store Manager handles daily staff rotas and exception logs; frontline staff provide hospitality and assisted ordering; and the tech vendor manages POS uptime.',
       keyPoints: [
-        'FY2024 Legal entity accounts: Revenue ₹12.01L, Expenses ₹11.58L, PBT ₹43,380, PAT ~₹1,010.',
-        'Overhead burden: Rent (₹5.89L) + Utilities (₹2.78L) = ₹8.67L (~75% of other expenses).',
-        'Outlet estimate: 2,300 bills × ₹1,127 AOV = ₹25.92 lakh/mo (~₹3.11 crore annualized).',
-        'Smash Burger unit math: ₹390 price - 35-40% ingredients (₹136.50-₹156) = ₹234-₹253.50 balance.',
-        'Strict financial disclaimer: Balance after ingredients is NOT profit or verified contribution margin.'
+        'Hierarchy: Founder → Operations + Finance → Store Manager → Frontline Team.',
+        'Pilot ownership: Ops Manager leads weekly reviews; Store Manager handles daily execution.',
+        'Weekly audit metrics: Uptime, failed payments, errors per 100 orders, staff-help rate, and satisfaction.'
       ],
       likelyQuestions: [
         {
-          question: 'Why is there a huge discrepancy between FY24 ₹12L revenue and ₹3.11 crore annualized?',
+          question: 'Will self-ordering screens replace frontline employees?',
           suggestedAnswer:
-            'The ₹12.01 lakh figure comes from FY2024 MCA statutory filings for a specific corporate entity, which may reflect early operations or a holding structure. The ₹3.11 crore figure is an annualized estimate from manager-reported Palarivattom outlet activity in a later period. They cannot be combined or directly compared.'
-        },
-        {
-          question: 'Why did you exclude packaging from the unit economics?',
-          suggestedAnswer:
-            'The illustrative unit economics specifically model dine-in consumption (which accounts for ~77% of reported volume), where disposable packaging is minimal compared to off-premise deliveries.'
+            'No. In a premium concept, staff are redeployed from routine cashier duties to floor hospitality, guided menu assistance, and fast exception resolution.'
         }
       ]
     }
   },
   {
     id: 7,
-    slug: 'ai-strategy',
-    title: 'Test Self-Service Before Scaling',
-    subtitle: 'A phased, risk-mitigated pilot with operational safeguards',
-    theme: 'ivory',
+    slug: 'the-numbers-that-matter',
+    category: '6 · THE NUMBERS THAT MATTER · ESTIMATES',
+    title: 'Show contribution per burger—not an undefined residual',
+    subtitle: 'Assume the 25–30% line represents other VARIABLE costs, not all overheads. Validate this classification with management.',
+    footnote: 'Ingredient cost is manager-reported. Other variable costs and 35% midpoint margin are assumptions, not verified company data.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '07',
+    theme: 'charcoal',
     notes: {
-      timeCode: '4:35 – 5:15 | Strategic Move: Phased Pilot',
+      timeCode: '4:30 – 5:15 | Unit Economics & Statutory Context',
       script:
-        'Management is considering approximately 4 to 5 self-service screens. Rather than betting on complex generative AI immediately, we recommend pragmatic, rule-based recommendation algorithms (dietary filters, heat level preferences, popular pairings). The pilot executes across 3 disciplined phases: Phase 1 establishes the empirical baseline. Phase 2 tests the screens during defined peak dayparts while maintaining front-line staff support. Phase 3 compares measured performance against an illustrative target of 15% reduction in median ordering time before making any scale decision.',
+        'Slide 7 brings rigor to the economics. We contrast two realities: the Palarivattom outlet inputs suggest ~2,300 monthly bills at ₹1,127 AOV (₹25.92L/month sales), while FY2024 MCA statutory accounts for the legal entity show ₹12.01L annual revenue, ₹8.67L rent/utilities (75% of expenses), and modest profit. For our ₹390 pre-tax Smash Burger, subtracting 35–40% ingredients (₹136.50–156) and an assumed 25–30% other variable costs (₹97.50–117) leaves an estimated contribution of ₹117–156 (30–40% margin). Assuming ₹6L fixed costs and a 35% margin, break-even requires ₹17.14L monthly sales.',
       keyPoints: [
-        'Hardware scope: Proposed 4–5 self-service touchpoints for the Palarivattom outlet.',
-        'Pragmatic tech: Rule-based recommendation engine prioritized over speculative complex AI.',
-        '6-step screen flow: Preferences → Recommendations → Customise → Review → Pay → Confirm.',
-        'Phase 1: Baseline measurement of ordering time, error rates, and baseline CSAT.',
-        'Phase 2: Peak daypart pilot with parallel human assistance safeguards.',
-        'Phase 3: Formal review using illustrative 15% time-reduction benchmark (not an achieved claim).'
+        'Dual financial lenses: MCA FY24 entity figures vs. current outlet operating run-rate (~₹25.92L/mo).',
+        'Smash Burger unit math: ₹390 selling price yields ₹117–156 contribution per burger (30–40% margin).',
+        'Break-even hurdle: ₹6L fixed costs ÷ 35% margin = ₹17.14L/month required outlet revenue.'
       ],
       likelyQuestions: [
         {
-          question: 'Why rule-based recommendations instead of deep learning or LLMs?',
+          question: 'Why are the legal entity accounts lower than current outlet sales?',
           suggestedAnswer:
-            'A QSR menu of 25–40 items does not require a multi-million parameter neural network. Rule-based logic (e.g., prompting sides, cheese upgrades, or beverage pairings based on dietary choices) is fast, deterministic, zero-latency, explainable, and inexpensive to implement.'
+            'MCA filings represent historical FY2024 statutory financials of the legal entity; current outlet metrics reflect later field estimates for Palarivattom. They represent different scopes and cannot be reconciled without internal books.'
         }
       ]
     }
   },
   {
     id: 8,
-    slug: 'recommendation',
-    title: 'Reduce Friction. Protect the Experience.',
-    subtitle: 'The strategic synthesis and executive decision rule',
+    slug: 'where-intelligence-changes-the-game',
+    category: '7 · WHERE INTELLIGENCE CHANGES THE GAME',
+    title: 'Implement AI-assisted guided self-ordering',
+    subtitle: 'Deploy a controlled 4-screen pilot with an AI menu assistant, staff oversight and measurable guardrails.',
+    footnote: 'Implementation includes menu/POS integration, privacy notice, fallback mode, staff training and vendor quote validation.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '08',
     theme: 'charcoal',
     notes: {
-      timeCode: '5:15 – 6:00 | Conclusion & Synthesis',
+      timeCode: '5:15 – 6:00 | Technology Architecture & Hurdle Rate',
       script:
-        'In conclusion, our recommendation is direct: Do not automate for the sake of automation. Test whether better ordering improves both the customer experience and the economics. Beyondburg built its brand on craft and human connection. By establishing a rigorous baseline, running a controlled 4–5 screen pilot, safeguarding frontline hospitality, and demanding verified financial payback, Beyondburg can eliminate queues without losing what makes it special. Thank you. I welcome your questions.',
+        'Slide 8 outlines the technology intervention: a 4-screen pilot featuring an AI menu assistant that queries dietary preferences, recommends high-margin pairings from approved menu data, and seamlessly syncs to POS with human allergen safety guardrails. Financing this requires ₹1.2L upfront (₹30k/screen) plus ₹10k/month software support, amounting to an annualized hurdle of ₹20k/month. At a 35% contribution margin, this requires ₹57,143 in incremental monthly sales—or just 51 incremental orders per month (~1.7 orders/day).',
       keyPoints: [
-        'Core strategic dictum: Test before scaling; protect brand equity.',
-        'Pillar 1: Measure the problem rigorously before capital deployment.',
-        'Pillar 2: Run a controlled, time-bounded pilot with fallback SOPs.',
-        'Pillar 3: Protect access to human hospitality and frontline dignity.',
-        'Pillar 4: Scale only when empirical data proves speed and unit economics.',
-        'Final takeaway: Faster ordering. Protected hospitality. Defensible economics.'
+        'Hardware scope: 4 self-ordering touchscreens deployed in peak rush zones.',
+        'AI guidance: Preference elicitation, 2–3 targeted recommendations, ingredient explanation, POS confirmation.',
+        'Financial hurdle: ₹1.2L capital + ₹10k/mo recurring = ₹20k/mo hurdle. Covers hurdle with 51 extra orders/month.'
       ],
       likelyQuestions: [
         {
-          question: 'What is the biggest risk of proceeding with this recommendation?',
+          question: 'What happens if the AI makes an allergen mistake?',
           suggestedAnswer:
-            'The biggest risk is customer alienation if the kiosks feel cold, sterile, or suffer software failures during peak rushes. That is why our framework requires keeping staff side-by-side with screens during the pilot.'
+            'The AI assistant is strictly bound to pre-approved menu database fields and forbidden from hallucinating allergens. Any complex dietary requirement triggers frontline staff intervention.'
+        }
+      ]
+    }
+  },
+  {
+    id: 9,
+    slug: 'the-move',
+    category: 'THE MOVE',
+    title: 'Pilot AI-assisted self-ordering at rush periods; scale only if contribution improves',
+    subtitle: 'All calculations use ₹1,127 reported AOV, 35% assumed contribution margin and ₹20,000 monthly cost hurdle. Uplift is hypothetical.',
+    footnote: 'ASSUMPTIONS: 2,000 exposed orders; 2–8% uplift and 35% margin unverified. | CONSISTENCY CHECK: ₹20k cost needs ₹57,143 sales ≈ 51 orders at ₹1,127 AOV.',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '09',
+    theme: 'charcoal',
+    notes: {
+      timeCode: '6:00 – 6:45 | Scenario Sensitivity & Decision Gates',
+      script:
+        'Slide 9 tests the sensitivity of the move across 2,000 orders exposed to the pilot. In a conservative Low scenario (+2% uplift or 40 extra orders), sales rise ₹45,080, generating ₹15,778 in contribution—falling ₹4,222 short of the ₹20k monthly hurdle. At Mid (+5% uplift or 100 extra orders), sales increase ₹1,12,700, delivering ₹39,445 contribution and a net gain of +₹19,445. At High (+8%), net contribution expands by +₹43,112. The strategic gate is binary: scale only if measured contribution exceeds full pilot costs while preserving hospitality standards.',
+      keyPoints: [
+        'Breakeven requirement: At least ~51 incremental orders needed to cover the ₹20k hurdle.',
+        'Scenario range: Low (+2%) yields -₹4,222; Mid (+5%) yields +₹19,445; High (+8%) yields +₹43,112 net contribution.',
+        'Decision rule: Proceed to multi-store rollout only if empirical contribution clears hurdle and CSAT holds.'
+      ],
+      likelyQuestions: [
+        {
+          question: 'What is the downside risk if uplift is zero?',
+          suggestedAnswer:
+            'The monthly downside is capped at the ₹20k hurdle rate. If the pilot fails to deliver 51 incremental orders or degrades customer experience, the lease/software agreement is paused immediately.'
+        }
+      ]
+    }
+  },
+  {
+    id: 10,
+    slug: 'conclusion',
+    category: 'CONCLUSION',
+    title: 'Premium taste is the promise.\nReliable execution is the proof.',
+    subtitle: 'Beyondburg sits in a growing food-service market, but the burger-only market size is not reliably established here.\nThe next move is a measured self-service pilot—not an assumption-led rollout.',
+    footnote: 'Field interview • MCA FY2024 accounts • Redseer/Kearney-Swiggy • KPMG • public menus',
+    footerLeft: 'SCHOOL OF FUTURE · TERM 1 CAPSTONE · BEYONDBURG',
+    footerRight: '10',
+    theme: 'charcoal',
+    notes: {
+      timeCode: '6:45 – 7:30 | Executive Synthesis',
+      script:
+        'In conclusion, premium taste is Beyondburg’s brand promise; reliable execution must be its business proof. While the macroeconomic food services market is expanding, sustainable profitability depends on disciplined unit economics. Rather than an unmeasured, capital-heavy rollout, Beyondburg should execute our disciplined four-step roadmap: Measure the void, pilot the fix, prove contribution, and scale only upon validation. Thank you. I am ready for your questions.',
+      keyPoints: [
+        'Strategic synthesis: Premium food craft must be paired with operational discipline.',
+        'Roadmap: Measure the void → pilot the fix → prove contribution → scale.',
+        'Core takeaway: Do not automate blindly; pilot with strict contribution hurdles and protect the guest experience.'
+      ],
+      likelyQuestions: [
+        {
+          question: 'What is your primary advice to the Founder?',
+          suggestedAnswer:
+            'Begin with a 2-week baseline timestamp study at Palarivattom. If ordering bottlenecks are verified, pilot 4 screens with the ₹20k hurdle test before making capital commitments.'
         }
       ]
     }
