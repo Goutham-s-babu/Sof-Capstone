@@ -1,14 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #0D172E;
-  --color-card: #132240;
-  --color-card-border: #1F3660;
-  --color-amber-brand: #E59546;
-  --color-amber-badge: #F6BD7F;
-  --color-green-brand: #5FA777;
-  --color-slate-muted: #64748B;
-  --font-serif: 'Newsreader', 'Playfair Display', Georgia, serif;
+  --color-canvas: #F9F6F0;
+  --color-canvas-dark: #161312;
+  --color-card-light: #FFFFFF;
+  --color-card-parchment: #F3EFE6;
+  --color-border-warm: #E6DFD5;
+  --color-border-dark: #2A2421;
+  --color-espresso: #1C1917;
+  --color-espresso-muted: #574E4A;
+  --color-espresso-subtle: #857B74;
+  --color-burnt-orange: #BD4F19;
+  --color-orange-subtle: #F6EDE6;
+  --color-orange-badge: #EDD9C8;
+  --color-sage-green: #2E6038;
+  --color-sage-subtle: #EBF3ED;
+  --font-serif: 'Playfair Display', 'Newsreader', Georgia, serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Space Mono', ui-monospace, monospace;
 }
@@ -24,8 +31,8 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #080E1D;
-    color: #F8FAFC;
+    background-color: #161312;
+    color: #1C1917;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -37,7 +44,7 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    background-color: #080E1D;
+    background-color: #161312;
   }
 }
 
@@ -53,7 +60,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* 16:9 Responsive Presentation Slide Canvas */
+/* 16:9 Presentation Canvas Container */
 .presentation-canvas-container {
   width: 100vw;
   height: 100vh;
@@ -61,7 +68,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: #080E1D;
+  background-color: #161312;
 }
 
 .slide-16-9 {
@@ -69,12 +76,12 @@
   max-width: 1920px;
   aspect-ratio: 16 / 9;
   max-height: 100vh;
-  background-color: #0D172E;
+  background-color: #F9F6F0;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
 }
 
 @media (max-aspect-ratio: 16/9) {
@@ -97,7 +104,7 @@
 @keyframes slideNextIn {
   0% {
     opacity: 0;
-    transform: translate3d(24px, 0, 0);
+    transform: translate3d(20px, 0, 0);
   }
   100% {
     opacity: 1;
@@ -108,7 +115,7 @@
 @keyframes slidePrevIn {
   0% {
     opacity: 0;
-    transform: translate3d(-24px, 0, 0);
+    transform: translate3d(-20px, 0, 0);
   }
   100% {
     opacity: 1;
@@ -119,7 +126,7 @@
 @keyframes subtleFadeUp {
   0% {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 8px, 0);
   }
   100% {
     opacity: 1;
@@ -128,21 +135,16 @@
 }
 
 .animate-slide-next {
-  animation: slideNextIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideNextIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slide-prev {
-  animation: slidePrevIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slidePrevIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-up {
-  animation: subtleFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: subtleFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
-.delay-75 { animation-delay: 75ms; }
-.delay-150 { animation-delay: 150ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
 
 /* Hide scrollbars */
 ::-webkit-scrollbar {
