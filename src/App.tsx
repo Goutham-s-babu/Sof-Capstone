@@ -5,19 +5,17 @@ import { PresentationControls } from './components/PresentationControls';
 import { SpeakerNotesModal } from './components/SpeakerNotesModal';
 import { ShortcutsModal } from './components/ShortcutsModal';
 import { OverviewModal } from './components/OverviewModal';
+import { EvidenceModal } from './components/EvidenceModal';
 
-import { Slide1Cover } from './components/slides/Slide1Cover';
-import { Slide2Agenda } from './components/slides/Slide2Agenda';
-import { Slide2Business } from './components/slides/Slide2Business';
-import { Slide3Market } from './components/slides/Slide3Market';
-import { Slide4Funnel } from './components/slides/Slide4Funnel';
-import { Slide5Void } from './components/slides/Slide5Void';
-import { Slide6Org } from './components/slides/Slide6Org';
-import { Slide7Economics } from './components/slides/Slide7Economics';
-import { Slide8AIStrategy } from './components/slides/Slide8AIStrategy';
-import { Slide9TheMove } from './components/slides/Slide9TheMove';
-import { Slide10Conclusion } from './components/slides/Slide10Conclusion';
-import { Slide11ThankYou } from './components/slides/Slide11ThankYou';
+import { Slide1Business } from './components/slides/Slide1Business';
+import { Slide2Market } from './components/slides/Slide2Market';
+import { Slide3CustomerJourney } from './components/slides/Slide3CustomerJourney';
+import { Slide4Org } from './components/slides/Slide4Org';
+import { Slide5Economics } from './components/slides/Slide5Economics';
+import { Slide6Void } from './components/slides/Slide6Void';
+import { Slide7Intelligence } from './components/slides/Slide7Intelligence';
+import { Slide8BurgerLab } from './components/slides/Slide8BurgerLab';
+import { Slide9Conclusion } from './components/slides/Slide9Conclusion';
 
 export const App: React.FC = () => {
   const totalSlides = SLIDES_METADATA.length;
@@ -26,6 +24,7 @@ export const App: React.FC = () => {
     direction,
     isFullscreen,
     showNotes,
+    showEvidence,
     showShortcuts,
     showOverview,
     controlsVisible,
@@ -34,6 +33,7 @@ export const App: React.FC = () => {
     prevSlide,
     toggleFullscreen,
     setShowNotes,
+    setShowEvidence,
     setShowShortcuts,
     setShowOverview,
   } = usePresentationNav({ totalSlides });
@@ -43,10 +43,11 @@ export const App: React.FC = () => {
     const imagesToPreload = [
       '/assets/beyondburg-logo.svg',
       '/assets/beyondburg-logo.png',
+      '/assets/field-store-counter.jpg',
       '/assets/field-author-visit.jpg',
       '/assets/field-interview-manager.jpg',
       '/assets/field-team-discussion.jpg',
-      '/assets/field-store-counter.jpg',
+      '/assets/smash-burger-hero.jpg',
     ];
     imagesToPreload.forEach((src) => {
       const img = new Image();
@@ -59,31 +60,25 @@ export const App: React.FC = () => {
   const renderCurrentSlide = () => {
     switch (currentSlide) {
       case 1:
-        return <Slide1Cover onNext={nextSlide} />;
+        return <Slide1Business />;
       case 2:
-        return <Slide2Agenda onSelectSlide={(s) => goToSlide(s)} />;
+        return <Slide2Market />;
       case 3:
-        return <Slide2Business />;
+        return <Slide3CustomerJourney />;
       case 4:
-        return <Slide3Market />;
+        return <Slide4Org />;
       case 5:
-        return <Slide4Funnel />;
+        return <Slide5Economics />;
       case 6:
-        return <Slide5Void />;
+        return <Slide6Void />;
       case 7:
-        return <Slide6Org />;
+        return <Slide7Intelligence />;
       case 8:
-        return <Slide7Economics />;
+        return <Slide8BurgerLab />;
       case 9:
-        return <Slide8AIStrategy />;
-      case 10:
-        return <Slide9TheMove />;
-      case 11:
-        return <Slide10Conclusion />;
-      case 12:
-        return <Slide11ThankYou onRestart={() => goToSlide(1, 'prev')} />;
+        return <Slide9Conclusion />;
       default:
-        return <Slide1Cover onNext={nextSlide} />;
+        return <Slide1Business />;
     }
   };
 
@@ -94,7 +89,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen overflow-hidden flex flex-col relative select-none bg-[#080E1D]">
+    <div className="w-screen h-screen overflow-hidden flex flex-col relative select-none bg-[#161312]">
       {/* 16:9 Presentation Canvas Container */}
       <div className="presentation-canvas-container">
         <div className="slide-16-9">
@@ -117,6 +112,7 @@ export const App: React.FC = () => {
         onNext={nextSlide}
         onToggleFullscreen={toggleFullscreen}
         onToggleNotes={() => setShowNotes(!showNotes)}
+        onToggleEvidence={() => setShowEvidence(!showEvidence)}
         onToggleShortcuts={() => setShowShortcuts(!showShortcuts)}
         onToggleOverview={() => setShowOverview(!showOverview)}
       />
@@ -136,6 +132,12 @@ export const App: React.FC = () => {
         slideNumber={currentSlide}
         notes={activeSlideData.notes}
         onClose={() => setShowNotes(false)}
+      />
+
+      {/* Evidence Standards & Data Lineage Modal (Press E) */}
+      <EvidenceModal
+        isOpen={showEvidence}
+        onClose={() => setShowEvidence(false)}
       />
 
       {/* Clicker & Keyboard Shortcuts Guide (Press ?) */}

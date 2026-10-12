@@ -7,6 +7,7 @@ import {
   FileText,
   HelpCircle,
   LayoutGrid,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface PresentationControlsProps {
@@ -18,6 +19,7 @@ interface PresentationControlsProps {
   onNext: () => void;
   onToggleFullscreen: () => void;
   onToggleNotes: () => void;
+  onToggleEvidence: () => void;
   onToggleShortcuts: () => void;
   onToggleOverview: () => void;
 }
@@ -31,6 +33,7 @@ export const PresentationControls: React.FC<PresentationControlsProps> = ({
   onNext,
   onToggleFullscreen,
   onToggleNotes,
+  onToggleEvidence,
   onToggleShortcuts,
   onToggleOverview,
 }) => {
@@ -111,6 +114,17 @@ export const PresentationControls: React.FC<PresentationControlsProps> = ({
         >
           <FileText className="w-3.5 h-3.5 text-[#BD4F19]" />
           <span className="hidden sm:inline text-[11px] font-medium tracking-wide">Notes</span>
+        </button>
+
+        {/* Evidence Standards Toggle */}
+        <button
+          onClick={onToggleEvidence}
+          aria-label="Toggle Evidence Standards"
+          title="Evidence Standards & Data Lineage (Press E)"
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition-colors hover:bg-[#F3EFE6] active:bg-[#EAE4D8] text-[#574E4A] hover:text-[#1C1917]"
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-[#BD4F19]" />
+          <span className="hidden sm:inline text-[11px] font-medium tracking-wide">Evidence</span>
         </button>
 
         {/* Shortcuts Guide Toggle */}

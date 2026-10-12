@@ -48,7 +48,7 @@ export const OverviewModal: React.FC<OverviewModalProps> = ({
         </div>
 
         {/* Grid of Slides */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4 py-6 overflow-y-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 py-6 overflow-y-auto">
           {SLIDES_METADATA.map((slide) => {
             const isSelected = slide.id === currentSlide;
             return (
@@ -96,8 +96,8 @@ export const OverviewModal: React.FC<OverviewModalProps> = ({
 
         {/* Footer info */}
         <div className="pt-4 border-t border-[#E2DDD4] flex items-center justify-between text-xs text-[#857B74]">
-          <span>10 Source Slides · Beyondburg Executive Capstone Presentation</span>
-          <span>Click slide or press 1–9, 0 to navigate</span>
+          <span>9 Slides · Beyondburg Executive Capstone Presentation</span>
+          <span>Click slide or press keys 1–9 to navigate directly</span>
         </div>
       </div>
     </div>

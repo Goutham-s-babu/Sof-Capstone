@@ -6,13 +6,74 @@ interface UsePresentationNavOptions {
 }
 
 export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
-  const [currentSlide, setCurrentSlide] = useState<number>(1);
+  const [currentSlide, setCurrentSlide] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      const hashNum = parseInt(hash, 10);
+      if (!isNaN(hashNum) && hashNum >= 1 && hashNum <= totalSlides) {
+        return hashNum;
+      }
+      const params = new URLSearchParams(window.location.search);
+      const slideParam = params.get('slide');
+      if (slideParam) {
+        const paramNum = parseInt(slideParam, 10);
+        if (!isNaN(paramNum) && paramNum >= 1 && paramNum <= totalSlides) {
+          return paramNum;
+        }
+      }
+    }
+    return 1;
+  });
   const [direction, setDirection] = useState<SlideDirection>('initial');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [showNotes, setShowNotes] = useState<boolean>(false);
-  const [showShortcuts, setShowShortcuts] = useState<boolean>(false);
-  const [showOverview, setShowOverview] = useState<boolean>(false);
+  const [showNotes, setShowNotes] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      return p.get('modal') === 'notes' || p.get('notes') === 'true';
+    }
+    return false;
+  });
+  const [showEvidence, setShowEvidence] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      return p.get('modal') === 'evidence' || p.get('evidence') === 'true';
+    }
+    return false;
+  });
+  const [showShortcuts, setShowShortcuts] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      return p.get('modal') === 'shortcuts';
+    }
+    return false;
+  });
+  const [showOverview, setShowOverview] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      return p.get('modal') === 'overview';
+    }
+    return false;
+  });
   const [controlsVisible, setControlsVisible] = useState<boolean>(true);
+
+  // Sync hash with currentSlide
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.history.replaceState(null, '', `#${currentSlide}`);
+    }
+  }, [currentSlide]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      const num = parseInt(hash, 10);
+      if (!isNaN(num) && num >= 1 && num <= totalSlides) {
+        setCurrentSlide(num);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [totalSlides]);
 
   const lastNavTime = useRef<number>(0);
   const idleTimer = useRef<number | null>(null);
@@ -183,6 +244,12 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
           setShowNotes((prev) => !prev);
           break;
 
+        case 'e':
+        case 'E':
+          e.preventDefault();
+          setShowEvidence((prev) => !prev);
+          break;
+
         case 'o':
         case 'O':
         case 'g':
@@ -202,6 +269,8 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
           // Close modals first if open
           if (showNotes) {
             setShowNotes(false);
+          } else if (showEvidence) {
+            setShowEvidence(false);
           } else if (showShortcuts) {
             setShowShortcuts(false);
           } else if (showOverview) {
@@ -226,6 +295,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
     goToSlide,
     toggleFullscreen,
     showNotes,
+    showEvidence,
     showShortcuts,
     showOverview,
     totalSlides,
@@ -257,6 +327,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
     direction,
     isFullscreen,
     showNotes,
+    showEvidence,
     showShortcuts,
     showOverview,
     controlsVisible,
@@ -267,6 +338,7 @@ export function usePresentationNav({ totalSlides }: UsePresentationNavOptions) {
     lastSlide,
     toggleFullscreen,
     setShowNotes,
+    setShowEvidence,
     setShowShortcuts,
     setShowOverview,
     setControlsVisible,

@@ -67,7 +67,7 @@ export const SpeakerNotesModal: React.FC<SpeakerNotesModalProps> = ({
             <div className="flex items-center gap-2 bg-[#F3EFE6] px-2.5 py-1 rounded-lg border border-[#E2DDD4]">
               <Clock className="w-3.5 h-3.5 text-[#BD4F19]" />
               <span className="text-xs font-semibold tracking-wider text-[#1C1917]">
-                {formatTimer(seconds)} <span className="opacity-50 text-[10px]">/ 07:00</span>
+                {formatTimer(seconds)} <span className="opacity-50 text-[10px]">/ 06:00</span>
               </span>
               <button
                 onClick={() => setIsRunning(!isRunning)}
@@ -107,12 +107,28 @@ export const SpeakerNotesModal: React.FC<SpeakerNotesModalProps> = ({
           {/* Spoken Presentation Script */}
           <div className="space-y-2">
             <h4 className="text-xs uppercase tracking-wider text-[#BD4F19] font-bold">
-              Spoken Script (Audience Delivery)
+              Spoken Script (Audience Delivery · 6-Min Target)
             </h4>
             <div className="p-4 rounded-lg bg-white border border-[#DFD7CB] leading-relaxed text-xs sm:text-[13px] text-[#1C1917]">
               "{notes.script}"
             </div>
           </div>
+
+          {/* Evidence Standards & Data Lineage */}
+          {notes.evidenceLineage && notes.evidenceLineage.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="text-xs uppercase tracking-wider text-[#BD4F19] font-bold">
+                Evidence Standards & Data Lineage
+              </h4>
+              <ul className="space-y-2">
+                {notes.evidenceLineage.map((lineage, idx) => (
+                  <li key={idx} className="text-xs bg-[#FAF8F5] p-2.5 rounded-lg border border-[#E8E2D8] text-[#44403C] leading-relaxed">
+                    {lineage}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Key Presentation Talking Points */}
           <div className="space-y-2">

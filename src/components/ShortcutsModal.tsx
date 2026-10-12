@@ -12,16 +12,17 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ isOpen, onClose 
   const clickerKeys = [
     { key: 'Right Arrow / Page Down / Space', desc: 'Next Slide' },
     { key: 'Left Arrow / Page Up / Backspace', desc: 'Previous Slide' },
-    { key: 'Home', desc: 'Jump to Slide 01 (Cover)' },
-    { key: 'End', desc: 'Jump to Slide 10 (Conclusion)' },
-    { key: '1 – 9, 0', desc: 'Direct Jump to Slide (1 to 10)' },
+    { key: 'Home', desc: 'Jump to Slide 01 (Business)' },
+    { key: 'End', desc: 'Jump to Slide 09 (Conclusion)' },
+    { key: '1 – 9', desc: 'Direct Jump to Slide (1 to 9)' },
     { key: 'Escape', desc: 'Close Modals / Exit Fullscreen' },
   ];
 
   const presenterShortcuts = [
     { key: 'F', desc: 'Toggle Fullscreen Mode' },
     { key: 'O / G', desc: 'Slide Overview & Navigator' },
-    { key: 'N', desc: 'Speaker Notes & Defence Prep' },
+    { key: 'N', desc: 'Speaker Notes & 6-Min Script' },
+    { key: 'E', desc: 'Evidence Standards & Data Lineage' },
     { key: '?', desc: 'Keyboard & Clicker Shortcuts' },
   ];
 
