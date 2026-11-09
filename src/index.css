@@ -1,164 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #F9F6F0;
-  --color-canvas-dark: #161312;
-  --color-card-light: #FFFFFF;
-  --color-card-parchment: #F3EFE6;
-  --color-border-warm: #E6DFD5;
-  --color-border-dark: #2A2421;
-  --color-espresso: #1C1917;
-  --color-espresso-muted: #574E4A;
-  --color-espresso-subtle: #857B74;
-  --color-burnt-orange: #BD4F19;
-  --color-orange-subtle: #F6EDE6;
-  --color-orange-badge: #EDD9C8;
-  --color-sage-green: #2E6038;
-  --color-sage-subtle: #EBF3ED;
-  --font-serif: 'Playfair Display', 'Newsreader', Georgia, serif;
+  --color-canvas-warm: #ECEAE3;
+  --color-canvas-card: #FFFFFF;
+  --color-border-warm: #E2E0D8;
+  --color-primary-sage: #557764;
+  --color-primary-dark: #1A201C;
+  --color-text-secondary: #717E76;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Space Mono', ui-monospace, monospace;
 }
 
 @layer base {
   * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
   }
   
   html, body {
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: #161312;
-    color: #1C1917;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #ECEAE3;
+    color: #1A201C;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    user-select: none;
+    overflow-x: hidden;
   }
 
   #root {
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-    background-color: #161312;
+    min-height: 100vh;
+    background-color: #ECEAE3;
   }
 }
 
-.font-serif-display {
-  font-family: 'Playfair Display', 'Newsreader', Georgia, serif;
-}
-
-.font-mono-consulting {
-  font-family: 'JetBrains Mono', 'Space Mono', ui-monospace, monospace;
-}
-
-.font-sans-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-/* 16:9 Presentation Canvas Container */
-.presentation-canvas-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-color: #161312;
-}
-
-.slide-16-9 {
-  width: 100%;
-  max-width: 1920px;
-  aspect-ratio: 16 / 9;
-  max-height: 100vh;
-  background-color: #F9F6F0;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
-}
-
-@media (max-aspect-ratio: 16/9) {
-  .slide-16-9 {
-    width: 100vw;
-    height: calc(100vw * 9 / 16);
-    max-height: 100vh;
-  }
-}
-
-@media (min-aspect-ratio: 16/9) {
-  .slide-16-9 {
-    height: 100vh;
-    width: calc(100vh * 16 / 9);
-    max-width: 100vw;
-  }
-}
-
-/* Animations */
-@keyframes slideNextIn {
-  0% {
-    opacity: 0;
-    transform: translate3d(20px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes slidePrevIn {
-  0% {
-    opacity: 0;
-    transform: translate3d(-20px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes subtleFadeUp {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 8px, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.animate-slide-next {
-  animation: slideNextIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-prev {
-  animation: slidePrevIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-fade-up {
-  animation: subtleFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Hide scrollbars */
+/* Custom scrollbars */
 ::-webkit-scrollbar {
-  display: none;
-}
-* {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  width: 6px;
+  height: 6px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D5D2C8;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B8B5AA;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
