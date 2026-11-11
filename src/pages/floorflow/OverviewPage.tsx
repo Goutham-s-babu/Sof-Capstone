@@ -212,103 +212,14 @@ export const OverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Gamified Production Line Overview Hero Section */}
-      <GamifiedLineOverview />
-
-      {/* Middle Grid: Dynamic Production Flow & Needs Attention */}
+      {/* Middle Grid: Gamified Production Line Overview (7 Cols) & Needs Attention (5 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Dynamic Production Flow Card (7 Cols) */}
-        <div className="lg:col-span-7 bg-white p-6 rounded-[24px] border border-[#E2E0D8] shadow-[0_4px_16px_rgba(30,40,35,0.03)] flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-[#1A201C]">Production Line Flow</h3>
-                <span className="text-[11px] font-semibold text-[#557764] bg-[#EDF3F0] px-2 py-0.5 rounded-full">
-                  {activeCategory}
-                </span>
-              </div>
-              <p className="text-xs text-[#76837C] mt-0.5">
-                Connected stage balance for {activeWorkflow.displayName}
-              </p>
-            </div>
-            <button
-              onClick={() => setCurrentRoute('/line-monitor')}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-[#557764] hover:text-[#3B5446] hover:underline"
-            >
-              Full Line Monitor
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Connected Dynamic Stages Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {stageProgressSummary.map((stage, idx) => (
-              <div
-                key={stage.stage}
-                onClick={() => setCurrentRoute('/line-monitor')}
-                className="p-3.5 rounded-2xl border border-[#E8E6DE] bg-[#FAF9F5] hover:bg-white hover:border-[#CFCCC2] hover:shadow-xs transition-all cursor-pointer"
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[10px] font-bold text-[#86928B] uppercase tracking-wider">
-                    Station 0{idx + 1}
-                  </span>
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      stage.status === 'Minor bottleneck'
-                        ? 'bg-[#D9822B]'
-                        : stage.status === 'On track'
-                        ? 'bg-[#557764]'
-                        : 'bg-[#8E9B92]'
-                    }`}
-                  />
-                </div>
-
-                <h4 className="text-xs font-bold text-[#1A201C] mb-2 line-clamp-1">
-                  {stage.stage}
-                </h4>
-
-                <div className="space-y-1 text-[11px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#78857E]">Active:</span>
-                    <span className="font-semibold text-[#1A201C]">
-                      {stage.activeCount} batches
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#78857E]">Waiting:</span>
-                    <span
-                      className={`font-semibold ${
-                        stage.waitingCount > 0 ? 'text-[#C2781D]' : 'text-[#78857E]'
-                      }`}
-                    >
-                      {stage.waitingCount} batches
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-2.5 pt-2 border-t border-[#EAE8E0]">
-                  <StatusBadge status={stage.status} size="sm" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Quick Line Jump Footer */}
-          <div className="flex items-center justify-between mt-5 px-3.5 py-2.5 bg-[#FAF9F5] rounded-xl border border-[#ECE9E1] text-xs text-[#6B7871]">
-            <span className="flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-[#557764]" />
-              Sequential workflow visual with node details & delay alerts
-            </span>
-            <button
-              onClick={() => setCurrentRoute('/line-monitor')}
-              className="text-[#557764] font-semibold hover:underline flex items-center gap-1 text-[11px]"
-            >
-              Open Line Monitor <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
+        {/* Left Side (7 Cols): Minimal Gamified Production Line Overview */}
+        <div className="lg:col-span-7">
+          <GamifiedLineOverview />
         </div>
 
-        {/* Needs Attention Card (5 Cols) */}
+        {/* Right Side (5 Cols): Needs Attention Card */}
         <div className="lg:col-span-5 bg-white p-6 rounded-[24px] border border-[#E2E0D8] shadow-[0_4px_16px_rgba(30,40,35,0.03)] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
