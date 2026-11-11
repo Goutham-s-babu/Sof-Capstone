@@ -17,6 +17,7 @@ import {
 import { useFloorFlow } from '../../context/FloorFlowContext';
 import { KPICard } from '../../components/floorflow/KPICard';
 import { StatusBadge } from '../../components/floorflow/StatusBadge';
+import { GamifiedLineOverview } from '../../components/floorflow/GamifiedLineOverview';
 
 export const OverviewPage: React.FC = () => {
   const {
@@ -210,6 +211,9 @@ export const OverviewPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Gamified Production Line Overview Hero Section */}
+      <GamifiedLineOverview />
 
       {/* Middle Grid: Dynamic Production Flow & Needs Attention */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
