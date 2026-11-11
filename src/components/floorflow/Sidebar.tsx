@@ -1,24 +1,28 @@
 import React from 'react';
 import {
   LayoutDashboard,
+  Activity,
   Layers,
   ClipboardCheck,
   CheckCircle2,
   AlertTriangle,
-  Settings2,
-  RotateCcw,
-  Sparkles
+  RotateCcw
 } from 'lucide-react';
 import { useFloorFlow, FloorFlowRoute } from '../../context/FloorFlowContext';
 
 export const Sidebar: React.FC = () => {
   const { currentRoute, setCurrentRoute, resetToDefaultData, currentUserRole } = useFloorFlow();
 
-  const navItems: { route: FloorFlowRoute; label: string; icon: React.ReactNode; badgeCount?: number }[] = [
+  const navItems: { route: FloorFlowRoute; label: string; icon: React.ReactNode }[] = [
     {
       route: '/overview',
       label: 'Overview',
       icon: <LayoutDashboard className="w-5 h-5" />
+    },
+    {
+      route: '/line-monitor',
+      label: 'Line Monitor',
+      icon: <Activity className="w-5 h-5" />
     },
     {
       route: '/batches',
@@ -47,7 +51,7 @@ export const Sidebar: React.FC = () => {
       className="hidden md:flex flex-col items-center justify-between w-18 py-6 my-4 ml-4 bg-white rounded-[32px] border border-[#E2E0D8] shadow-[0_6px_28px_rgba(30,40,35,0.04)] z-30 flex-shrink-0"
       style={{ height: 'calc(100vh - 2rem)' }}
     >
-      {/* Brand Logo */}
+      {/* Brand Logo & Luker Tag */}
       <div className="flex flex-col items-center gap-1 group cursor-pointer" onClick={() => setCurrentRoute('/overview')}>
         <div className="w-11 h-11 rounded-2xl bg-[#EDF3F0] border border-[#D5E2DB] flex items-center justify-center text-[#3D5B4A] shadow-xs group-hover:scale-105 transition-transform">
           {/* Stylized FloorFlow turbine / manufacturing petal symbol */}

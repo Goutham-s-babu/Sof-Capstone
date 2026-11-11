@@ -14,7 +14,8 @@ import {
   History,
   X,
   ChevronRight,
-  Check
+  Check,
+  Tag
 } from 'lucide-react';
 import { useFloorFlow } from '../../context/FloorFlowContext';
 import { KPICard } from '../../components/floorflow/KPICard';
@@ -22,7 +23,8 @@ import { StatusBadge } from '../../components/floorflow/StatusBadge';
 import {
   Batch,
   ProductionStageName,
-  BatchStatus
+  BatchStatus,
+  ProductCategory
 } from '../../types/floorflow';
 
 export const BatchesPage: React.FC = () => {
@@ -36,10 +38,14 @@ export const BatchesPage: React.FC = () => {
     addBatch,
     activityLogs,
     products,
+    categoryProducts,
+    activeCategory,
+    activeWorkflow,
     searchQuery: globalSearch
   } = useFloorFlow();
 
   // Local filters
+  const [categoryScope, setCategoryScope] = useState<'Active' | 'All'>('Active');
   const [stageFilter, setStageFilter] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [localSearch, setLocalSearch] = useState<string>('');
@@ -47,10 +53,11 @@ export const BatchesPage: React.FC = () => {
 
   // Modals & Drawers
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-  const [newBatchCode, setNewBatchCode] = useState<string>('B-2409');
-  const [newProductId, setNewProductId] = useState<string>(products[0]?.id || '');
+  const [newBatchCode, setNewBatchCode] = useState<string>('B-LT-109');
+  const [newProductId, setNewProductId] = useState<string>(categoryProducts[0]?.id || products[0]?.id || '');
+  const [newCategory, setNewCategory] = useState<ProductCategory>(activeCategory);
   const [newPlannedQty, setNewPlannedQty] = useState<number>(350);
-  const [newTargetLine, setNewTargetLine] = useState<string>('Line 2 - High Velocity');
+  const [newTargetLine, setNewTargetLine] = useState<string>(activeWorkflow.stages[0]?.targetLine || 'Main Assembly Line');
   const [newNotes, setNewNotes] = useState<string>('');
 
   // Selected batch object
@@ -62,9 +69,15 @@ export const BatchesPage: React.FC = () => {
   const filteredBatches = useMemo(() => {
     const q = (localSearch || globalSearch).toLowerCase().trim();
     return batches.filter(b => {
+      // Category filter
+      if (categoryScope === 'Active' && b.category !== activeCategory) {
+        return false;
+      }
+
       const matchSearch = !q || 
         b.batch_code.toLowerCase().includes(q) || 
         b.product_name.toLowerCase().includes(q) ||
+        (b.category && b.category.toLowerCase().includes(q)) ||
         b.assigned_to.toLowerCase().includes(q);
 
       const matchStage = stageFilter === 'All' || b.current_stage === stageFilter;
@@ -80,31 +93,36 @@ export const BatchesPage: React.FC = () => {
       }
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
-  }, [batches, localSearch, globalSearch, stageFilter, statusFilter, sortBy]);
+  }, [batches, localSearch, globalSearch, categoryScope, activeCategory, stageFilter, statusFilter, sortBy]);
 
-  // Production Timeline steps
-  const allStages: ProductionStageName[] = ['Cutting', 'Assembly', 'Inspection', 'Packing', 'Completed'];
+  // Production stages derived from active category workflow
+  const workflowStagesList = useMemo(() => {
+    return [...activeWorkflow.stages.map(s => s.name), 'Completed'];
+  }, [activeWorkflow]);
 
-  const getStepStatus = (batch: Batch, step: ProductionStageName) => {
+  const getStepStatus = (batch: Batch, stepName: string) => {
     if (batch.status === 'Completed') return 'completed';
-    if (step === batch.current_stage) return 'current';
+    if (stepName === batch.current_stage) return 'current';
     
-    const currentIndex = allStages.indexOf(batch.current_stage);
-    const stepIndex = allStages.indexOf(step);
-    if (stepIndex < currentIndex) return 'completed';
+    const currentIndex = workflowStagesList.indexOf(batch.current_stage);
+    const stepIndex = workflowStagesList.indexOf(stepName);
+    if (currentIndex !== -1 && stepIndex !== -1 && stepIndex < currentIndex) return 'completed';
     return 'upcoming';
   };
 
   const handleCreateBatch = (e: React.FormEvent) => {
     e.preventDefault();
-    const product = products.find(p => p.id === newProductId) || products[0];
+    const product = products.find(p => p.id === newProductId) || categoryProducts[0] || products[0];
+    const initialStage = activeWorkflow.stages[0]?.name || 'PCB / SMT Preparation';
+
     addBatch({
       batch_code: newBatchCode,
+      category: newCategory,
       product_id: product.id,
       product_name: product.name,
       planned_quantity: Number(newPlannedQty),
       completed_quantity: 0,
-      current_stage: 'Cutting',
+      current_stage: initialStage,
       status: 'In Progress',
       assigned_to: 'Operator Shift Lead',
       target_line: newTargetLine,
@@ -124,23 +142,32 @@ export const BatchesPage: React.FC = () => {
       {/* Top Header Row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-[#1A201C] tracking-tight">
-            Production Batches
-          </h2>
-          <p className="text-xs text-[#717E76]">
-            Active line tracking, work-in-progress routing and yield auditing
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-bold text-[#1A201C] tracking-tight">
+              Production Batches
+            </h2>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EDF3F0] text-[#3D5B4A] border border-[#D5E2DB]">
+              {categoryScope === 'Active' ? `${activeCategory} Batches` : 'All Categories'}
+            </span>
+          </div>
+          <p className="text-xs text-[#717E76] mt-0.5">
+            Active shopfloor batch routing, progress tracking and stage yields
           </p>
         </div>
 
         <button
           onClick={() => {
-            setNewBatchCode(`B-${Math.floor(2410 + Math.random() * 50)}`);
+            const prefix = activeCategory.slice(0, 2).toUpperCase();
+            setNewBatchCode(`B-${prefix}-${Math.floor(110 + Math.random() * 80)}`);
+            setNewCategory(activeCategory);
+            setNewProductId(categoryProducts[0]?.id || products[0]?.id || '');
+            setNewTargetLine(activeWorkflow.stages[0]?.targetLine || 'Main Line');
             setIsCreateModalOpen(true);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#557764] text-white text-xs font-semibold hover:bg-[#486756] shadow-[0_3px_12px_rgba(85,119,100,0.25)] transition-all cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1A201C] text-white text-xs font-semibold hover:bg-[#323D36] shadow-[0_3px_12px_rgba(26,32,28,0.25)] transition-all cursor-pointer self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>New Batch</span>
+          <span>New {activeCategory} Batch</span>
         </button>
       </div>
 
@@ -149,32 +176,32 @@ export const BatchesPage: React.FC = () => {
         <KPICard
           label="In Production"
           value={String(kpis.activeBatchesCount).padStart(2, '0')}
-          subtitle="Actively cycling on shop floor"
-          badge="Live"
+          subtitle={`Active in ${activeCategory}`}
+          badge="Live Floor"
         />
         <KPICard
           label="Waiting"
           value={String(kpis.waitingBatchesCount).padStart(2, '0')}
-          subtitle="Delayed for tooling or parts"
+          subtitle="Awaiting next line stage"
           badge="Action Req."
         />
         <KPICard
           label="Completed Today"
           value={String(kpis.completedBatchesToday).padStart(2, '0')}
-          subtitle="Cleared through final packing"
+          subtitle="Cleared final packing & QC"
           badge="Verified"
         />
         <KPICard
           label="On Hold"
           value={String(kpis.onHoldBatchesCount).padStart(2, '0')}
-          subtitle="Quarantined or pending QC"
+          subtitle="Quarantined or pending signoff"
           badge="Hold"
         />
       </div>
 
-      {/* Main Content Area: Left Table (70%) & Right Drawer (30%) */}
+      {/* Main Content Area: Left Table (8 Cols) & Right Detail Panel (4 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Batch Register Table (7 or 8 Cols) */}
+        {/* Left: Batch Register Table */}
         <div className="lg:col-span-8 bg-white p-6 rounded-[24px] border border-[#E2E0D8] shadow-[0_4px_16px_rgba(30,40,35,0.03)] flex flex-col justify-between">
           <div>
             {/* Filter Toolbar */}
@@ -183,7 +210,7 @@ export const BatchesPage: React.FC = () => {
                 <Search className="w-4 h-4 text-[#8A968F] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Filter by Batch ID or Product..."
+                  placeholder="Filter by Batch ID, product, or category..."
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
                   className="w-full bg-[#FAF9F5] pl-9 pr-3 py-2 rounded-full border border-[#E5E3DC] text-xs text-[#1A201C] placeholder-[#8E9B93] focus:outline-none focus:border-[#557764]"
@@ -191,6 +218,30 @@ export const BatchesPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
+                {/* Scope Switcher */}
+                <div className="inline-flex p-0.5 bg-[#FAF9F5] rounded-full border border-[#E5E3DC] text-xs">
+                  <button
+                    onClick={() => setCategoryScope('Active')}
+                    className={`px-3 py-1 rounded-full font-medium transition-all ${
+                      categoryScope === 'Active'
+                        ? 'bg-white text-[#1A201C] font-semibold shadow-xs'
+                        : 'text-[#6C7A72] hover:text-[#1A201C]'
+                    }`}
+                  >
+                    {activeCategory} Only
+                  </button>
+                  <button
+                    onClick={() => setCategoryScope('All')}
+                    className={`px-3 py-1 rounded-full font-medium transition-all ${
+                      categoryScope === 'All'
+                        ? 'bg-white text-[#1A201C] font-semibold shadow-xs'
+                        : 'text-[#6C7A72] hover:text-[#1A201C]'
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                </div>
+
                 {/* Stage Filter */}
                 <select
                   value={stageFilter}
@@ -198,11 +249,9 @@ export const BatchesPage: React.FC = () => {
                   className="bg-[#FAF9F5] px-3 py-2 rounded-full border border-[#E5E3DC] text-xs text-[#526058] font-medium focus:outline-none cursor-pointer"
                 >
                   <option value="All">All Stages</option>
-                  <option value="Cutting">Cutting</option>
-                  <option value="Assembly">Assembly</option>
-                  <option value="Inspection">Inspection</option>
-                  <option value="Packing">Packing</option>
-                  <option value="Completed">Completed</option>
+                  {workflowStagesList.map((stg) => (
+                    <option key={stg} value={stg}>{stg}</option>
+                  ))}
                 </select>
 
                 {/* Status Filter */}
@@ -231,16 +280,17 @@ export const BatchesPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Table */}
+            {/* Table with Product Category, Product Name, Batch ID, Planned, Completed, Current Stage, Status */}
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-[#ECEAE2] text-[11px] font-semibold text-[#808C84] uppercase tracking-wider">
                     <th className="py-3 px-3">Batch ID</th>
-                    <th className="py-3 px-3">Product</th>
+                    <th className="py-3 px-3">Category</th>
+                    <th className="py-3 px-3">Product Name</th>
                     <th className="py-3 px-3 text-right">Planned</th>
                     <th className="py-3 px-3 text-right">Completed</th>
-                    <th className="py-3 px-3">Stage</th>
+                    <th className="py-3 px-3">Current Stage</th>
                     <th className="py-3 px-3">Status</th>
                     <th className="py-3 px-3 text-center">Action</th>
                   </tr>
@@ -261,6 +311,11 @@ export const BatchesPage: React.FC = () => {
                         <td className="py-3.5 px-3">
                           <span className="font-mono font-bold text-[#1A201C] group-hover:text-[#557764] transition-colors">
                             {batch.batch_code}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#FAF9F5] text-[#55635B] border border-[#E2E0D8]">
+                            {batch.category || 'General'}
                           </span>
                         </td>
                         <td className="py-3.5 px-3 font-medium text-[#1A201C]">
@@ -309,7 +364,7 @@ export const BatchesPage: React.FC = () => {
 
               {filteredBatches.length === 0 && (
                 <div className="text-center py-12 text-xs text-[#8A968F]">
-                  No production batches match the selected criteria.
+                  No production batches found for {categoryScope === 'Active' ? activeCategory : 'the selected criteria'}.
                 </div>
               )}
             </div>
@@ -317,8 +372,8 @@ export const BatchesPage: React.FC = () => {
 
           {/* Table Footer Count */}
           <div className="mt-4 pt-3 border-t border-[#F0EFE8] flex items-center justify-between text-xs text-[#7B8881]">
-            <span>Showing {filteredBatches.length} of {batches.length} total batches</span>
-            <span className="text-[#557764] font-medium">Auto-synced with station terminals</span>
+            <span>Showing {filteredBatches.length} batches</span>
+            <span className="text-[#557764] font-medium">Category: {categoryScope === 'Active' ? activeCategory : 'All Categories'}</span>
           </div>
         </div>
 
@@ -338,6 +393,10 @@ export const BatchesPage: React.FC = () => {
                   <p className="text-xs text-[#6F7C74] font-medium mt-0.5">
                     {selectedBatch.product_name}
                   </p>
+                  <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#EDF3F0] text-[#3D5B4A]">
+                    <Tag className="w-2.5 h-2.5" />
+                    {selectedBatch.category}
+                  </span>
                 </div>
                 <span className="text-[11px] text-[#8C9891] px-2 py-1 bg-[#FAF9F5] rounded-lg border border-[#ECEAE2]">
                   {selectedBatch.target_line || 'Main Line'}
@@ -376,10 +435,10 @@ export const BatchesPage: React.FC = () => {
               {/* Production Timeline Stepper */}
               <div className="mb-5">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#79857E] mb-3">
-                  Production Timeline
+                  Production Line Routing
                 </h4>
                 <div className="space-y-3 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#EAE8E0]">
-                  {allStages.map((stg) => {
+                  {workflowStagesList.map((stg) => {
                     const status = getStepStatus(selectedBatch, stg);
                     return (
                       <div key={stg} className="relative flex items-center gap-3 pl-1 text-xs">
@@ -421,7 +480,7 @@ export const BatchesPage: React.FC = () => {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#79857E] mb-2">
                   Batch Activity Audit
                 </h4>
-                <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
+                <div className="space-y-2 max-h-28 overflow-y-auto pr-1">
                   {batchLogs.length > 0 ? (
                     batchLogs.map((log) => (
                       <div key={log.id} className="p-2 rounded-xl bg-[#FAF9F5] border border-[#F0EFEA] text-[11px]">
@@ -448,15 +507,9 @@ export const BatchesPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => {
-                    const nextMap: Record<ProductionStageName, ProductionStageName> = {
-                      Cutting: 'Assembly',
-                      Assembly: 'Inspection',
-                      Inspection: 'Packing',
-                      Packing: 'Completed',
-                      Completed: 'Completed'
-                    };
-                    const next = nextMap[selectedBatch.current_stage];
-                    if (next !== selectedBatch.current_stage) {
+                    const currentIndex = workflowStagesList.indexOf(selectedBatch.current_stage);
+                    if (currentIndex !== -1 && currentIndex < workflowStagesList.length - 1) {
+                      const next = workflowStagesList[currentIndex + 1];
                       updateBatchStage(selectedBatch.id, next);
                     }
                   }}
@@ -510,7 +563,7 @@ export const BatchesPage: React.FC = () => {
               Initialize New Production Batch
             </h3>
             <p className="text-xs text-[#717E76] mb-5">
-              Generate work order routing and schedule on active line.
+              Generate work order routing for <strong>{newCategory}</strong>.
             </p>
 
             <form onSubmit={handleCreateBatch} className="space-y-4">
@@ -536,7 +589,7 @@ export const BatchesPage: React.FC = () => {
                   onChange={(e) => setNewProductId(e.target.value)}
                   className="w-full bg-[#FAF9F5] px-3.5 py-2.5 rounded-xl border border-[#E0DED6] text-xs font-medium text-[#1A201C] focus:outline-none focus:border-[#557764]"
                 >
-                  {products.map((p) => (
+                  {products.filter(p => p.category === newCategory).map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.name} ({p.product_code})
                     </option>
@@ -595,7 +648,7 @@ export const BatchesPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-full bg-[#557764] text-white text-xs font-semibold hover:bg-[#486756] shadow-sm"
+                  className="px-5 py-2 rounded-full bg-[#1A201C] text-white text-xs font-semibold hover:bg-[#323D36] shadow-sm"
                 >
                   Create Batch
                 </button>

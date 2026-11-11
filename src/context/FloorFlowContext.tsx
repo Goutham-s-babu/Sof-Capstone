@@ -11,7 +11,11 @@ import {
   BatchStatus,
   QualityResult,
   RequirementStatus,
-  ReadinessStatus
+  ReadinessStatus,
+  ProductCategory,
+  WorkflowStage,
+  ProductWorkflow,
+  LineStageStatus
 } from '../types/floorflow';
 import {
   INITIAL_BATCHES,
@@ -20,10 +24,18 @@ import {
   INITIAL_REJECTIONS,
   INITIAL_ACTIVITY_LOGS,
   INITIAL_NOTIFICATIONS,
-  INITIAL_PRODUCTS
+  INITIAL_PRODUCTS,
+  INITIAL_WORKFLOWS,
+  LUKER_CATEGORIES
 } from '../data/floorflowInitialData';
 
-export type FloorFlowRoute = '/overview' | '/batches' | '/quality' | '/readiness' | '/rejections';
+export type FloorFlowRoute = 
+  | '/overview' 
+  | '/line-monitor' 
+  | '/batches' 
+  | '/quality' 
+  | '/readiness' 
+  | '/rejections';
 
 interface FloorFlowContextType {
   // Navigation & Role
@@ -34,6 +46,19 @@ interface FloorFlowContextType {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 
+  // Category Workspace
+  activeCategory: ProductCategory;
+  setActiveCategory: (category: ProductCategory) => void;
+  availableCategories: ProductCategory[];
+
+  // Workflow definitions & Line Monitor
+  workflows: Record<ProductCategory, ProductWorkflow>;
+  activeWorkflow: ProductWorkflow;
+  selectedStageId: string | null;
+  setSelectedStageId: (stageId: string | null) => void;
+  updateWorkflowStageStatus: (categoryId: ProductCategory, stageId: string, status: LineStageStatus, note?: string) => void;
+  updateWorkflowStages: (categoryId: ProductCategory, stages: WorkflowStage[]) => void;
+
   // Selected entities for drawers / detail views
   selectedBatchId: string | null;
   setSelectedBatchId: (id: string | null) => void;
@@ -42,7 +67,7 @@ interface FloorFlowContextType {
   selectedQualityCheckId: string | null;
   setSelectedQualityCheckId: (id: string | null) => void;
 
-  // Data sets
+  // Master Data sets
   batches: Batch[];
   qualityChecks: QualityCheck[];
   productionRuns: ProductionRun[];
@@ -51,7 +76,14 @@ interface FloorFlowContextType {
   notifications: NotificationItem[];
   products: typeof INITIAL_PRODUCTS;
 
-  // Calculated KPI metrics
+  // Category-scoped filtered data
+  categoryBatches: Batch[];
+  categoryQualityChecks: QualityCheck[];
+  categoryProductionRuns: ProductionRun[];
+  categoryRejections: Rejection[];
+  categoryProducts: typeof INITIAL_PRODUCTS;
+
+  // Category-scoped KPI metrics
   kpis: {
     activeBatchesCount: number;
     waitingBatchesCount: number;
@@ -71,13 +103,14 @@ interface FloorFlowContextType {
     totalUnitsRejected: number;
     rejectionRate: number;
     reasonsRecordedRate: number;
+    currentBottleneck: string | null;
   };
 
   // Aggregated breakdowns for charts
   rejectionsByReason: { reason: string; count: number; percentage: number }[];
   rejectionsByStage: { stage: string; count: number }[];
   stageProgressSummary: {
-    stage: ProductionStageName;
+    stage: string;
     activeCount: number;
     waitingCount: number;
     status: 'Normal' | 'Minor bottleneck' | 'On track' | 'Clear';
@@ -99,7 +132,7 @@ interface FloorFlowContextType {
 
 const FloorFlowContext = createContext<FloorFlowContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'floorflow_app_state_v1';
+const STORAGE_KEY = 'floorflow_luker_state_v2';
 
 export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Navigation & Role
@@ -107,10 +140,33 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [currentUserRole, setCurrentUserRole] = useState<UserRole>('Production Manager');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Active Category Workspace (defaults to Lighting as required)
+  const [activeCategory, setActiveCategory] = useState<ProductCategory>(() => {
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_active_cat`);
+      return (saved as ProductCategory) || 'Lighting';
+    } catch {
+      return 'Lighting';
+    }
+  });
+
+  // Category Workflows
+  const [workflows, setWorkflows] = useState<Record<ProductCategory, ProductWorkflow>>(() => {
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_workflows`);
+      return saved ? JSON.parse(saved) : INITIAL_WORKFLOWS;
+    } catch {
+      return INITIAL_WORKFLOWS;
+    }
+  });
+
+  // Selected line stage for detail panel in Line Monitor
+  const [selectedStageId, setSelectedStageId] = useState<string | null>('stg-light-2');
+
   // Selected drawers
-  const [selectedBatchId, setSelectedBatchId] = useState<string | null>('b-2401');
-  const [selectedRunId, setSelectedRunId] = useState<string | null>('r-118');
-  const [selectedQualityCheckId, setSelectedQualityCheckId] = useState<string | null>('qc-1');
+  const [selectedBatchId, setSelectedBatchId] = useState<string | null>('b-lt-101');
+  const [selectedRunId, setSelectedRunId] = useState<string | null>('r-lt-101');
+  const [selectedQualityCheckId, setSelectedQualityCheckId] = useState<string | null>('qc-lt-1');
 
   // Main collections initialized from storage or defaults
   const [batches, setBatches] = useState<Batch[]>(() => {
@@ -170,6 +226,8 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Sync to local storage
   useEffect(() => {
     try {
+      localStorage.setItem(`${STORAGE_KEY}_active_cat`, activeCategory);
+      localStorage.setItem(`${STORAGE_KEY}_workflows`, JSON.stringify(workflows));
       localStorage.setItem(`${STORAGE_KEY}_batches`, JSON.stringify(batches));
       localStorage.setItem(`${STORAGE_KEY}_qc`, JSON.stringify(qualityChecks));
       localStorage.setItem(`${STORAGE_KEY}_runs`, JSON.stringify(productionRuns));
@@ -179,38 +237,100 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch (e) {
       console.warn('LocalStorage save failed:', e);
     }
-  }, [batches, qualityChecks, productionRuns, rejections, activityLogs, notifications]);
+  }, [activeCategory, workflows, batches, qualityChecks, productionRuns, rejections, activityLogs, notifications]);
 
-  // Calculations
+  // When active category switches, update default selections if current selected item doesn't belong to the category
+  useEffect(() => {
+    const catBatches = batches.filter(b => b.category === activeCategory);
+    if (catBatches.length > 0 && (!selectedBatchId || !catBatches.some(b => b.id === selectedBatchId))) {
+      setSelectedBatchId(catBatches[0].id);
+    }
+
+    const catRuns = productionRuns.filter(r => r.category === activeCategory);
+    if (catRuns.length > 0 && (!selectedRunId || !catRuns.some(r => r.id === selectedRunId))) {
+      setSelectedRunId(catRuns[0].id);
+    }
+
+    const catQcs = qualityChecks.filter(q => q.category === activeCategory);
+    if (catQcs.length > 0 && (!selectedQualityCheckId || !catQcs.some(q => q.id === selectedQualityCheckId))) {
+      setSelectedQualityCheckId(catQcs[0].id);
+    }
+
+    const wf = workflows[activeCategory];
+    if (wf && wf.stages.length > 0) {
+      // Pick first stage with delay/waiting or first stage
+      const bottleneckStage = wf.stages.find(s => s.status === 'Delayed' || s.status === 'Waiting');
+      setSelectedStageId(bottleneckStage ? bottleneckStage.id : wf.stages[0].id);
+    }
+  }, [activeCategory]);
+
+  // Category Scoped Data
+  const categoryBatches = useMemo(() => {
+    return batches.filter(b => b.category === activeCategory);
+  }, [batches, activeCategory]);
+
+  const categoryQualityChecks = useMemo(() => {
+    return qualityChecks.filter(q => q.category === activeCategory);
+  }, [qualityChecks, activeCategory]);
+
+  const categoryProductionRuns = useMemo(() => {
+    return productionRuns.filter(r => r.category === activeCategory);
+  }, [productionRuns, activeCategory]);
+
+  const categoryRejections = useMemo(() => {
+    return rejections.filter(r => r.category === activeCategory);
+  }, [rejections, activeCategory]);
+
+  const categoryProducts = useMemo(() => {
+    return INITIAL_PRODUCTS.filter(p => p.category === activeCategory);
+  }, [activeCategory]);
+
+  const activeWorkflow = useMemo(() => {
+    return workflows[activeCategory] || INITIAL_WORKFLOWS['Lighting'];
+  }, [workflows, activeCategory]);
+
+  // Category KPIs calculation
   const kpis = useMemo(() => {
-    const activeBatches = batches.filter(b => b.status === 'In Progress' || b.status === 'Waiting');
-    const waitingBatches = batches.filter(b => b.status === 'Waiting');
-    const completedToday = batches.filter(b => b.status === 'Completed');
-    const onHoldBatches = batches.filter(b => b.status === 'On Hold');
+    const activeBatches = categoryBatches.filter(b => b.status === 'In Progress' || b.status === 'Waiting');
+    const waitingBatches = categoryBatches.filter(b => b.status === 'Waiting');
+    const completedToday = categoryBatches.filter(b => b.status === 'Completed');
+    const onHoldBatches = categoryBatches.filter(b => b.status === 'On Hold');
 
-    const scheduledQC = qualityChecks.length;
-    const completedQC = qualityChecks.filter(q => q.status === 'Completed').length;
-    const pendingQC = qualityChecks.filter(q => q.status === 'Scheduled' || q.status === 'In Progress' || q.result === 'Pending').length;
-    const failedQC = qualityChecks.filter(q => q.result === 'Fail').length;
+    const scheduledQC = categoryQualityChecks.length;
+    const completedQC = categoryQualityChecks.filter(q => q.status === 'Completed').length;
+    const pendingQC = categoryQualityChecks.filter(q => q.status === 'Scheduled' || q.status === 'In Progress' || q.result === 'Pending').length;
+    const failedQC = categoryQualityChecks.filter(q => q.result === 'Fail').length;
     const qualityCompletionRate = scheduledQC > 0 ? Math.round((completedQC / scheduledQC) * 100) : 0;
 
-    const plannedRuns = productionRuns.length;
-    const readyRuns = productionRuns.filter(r => r.status === 'Ready').length;
-    const atRiskRuns = productionRuns.filter(r => r.status === 'At Risk').length;
-    const blockedRuns = productionRuns.filter(r => r.status === 'Blocked').length;
+    const plannedRuns = categoryProductionRuns.length;
+    const readyRuns = categoryProductionRuns.filter(r => r.status === 'Ready').length;
+    const atRiskRuns = categoryProductionRuns.filter(r => r.status === 'At Risk').length;
+    const blockedRuns = categoryProductionRuns.filter(r => r.status === 'Blocked').length;
     const readinessRate = plannedRuns > 0 ? Math.round((readyRuns / plannedRuns) * 100) : 0;
 
-    // Total produced quantity across all active & completed runs
-    const totalUnitsProduced = batches.reduce((acc, curr) => acc + (curr.completed_quantity || 0), 4280 - 1260); 
-    // Anchor to realistic 4,280 base line from specifications + completed quantities
-    const totalUnitsRejected = rejections.reduce((acc, r) => acc + (r.rejected_quantity || 0), 0);
+    // Total produced units for category
+    const completedFromBatches = categoryBatches.reduce((acc, curr) => acc + (curr.completed_quantity || 0), 0);
+    // Baseline anchor to keep numbers realistic & positive per category
+    const baseLineByCategory: Record<ProductCategory, number> = {
+      'Lighting': 1850,
+      'Fans': 430,
+      'Wires': 220,
+      'Switchgear': 550,
+      'Water Heaters': 240
+    };
+    const totalUnitsProduced = (baseLineByCategory[activeCategory] || 500) + completedFromBatches;
+    const totalUnitsRejected = categoryRejections.reduce((acc, r) => acc + (r.rejected_quantity || 0), 0);
     const rejectionRate = totalUnitsProduced > 0 
       ? Number(((totalUnitsRejected / totalUnitsProduced) * 100).toFixed(2))
       : 0;
-    const reasonsRecordedRate = totalUnitsRejected > 0 ? 100 : 100;
+
+    // Identify current bottleneck in active category workflow
+    const delayedStage = activeWorkflow.stages.find(s => s.status === 'Delayed');
+    const waitingStage = activeWorkflow.stages.find(s => s.status === 'Waiting');
+    const currentBottleneck = delayedStage ? delayedStage.name : (waitingStage ? waitingStage.name : null);
 
     return {
-      activeBatchesCount: activeBatches.length > 0 ? activeBatches.length : 24,
+      activeBatchesCount: activeBatches.length,
       waitingBatchesCount: waitingBatches.length,
       completedBatchesToday: completedToday.length,
       onHoldBatchesCount: onHoldBatches.length,
@@ -227,71 +347,70 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       totalUnitsProduced,
       totalUnitsRejected,
       rejectionRate,
-      reasonsRecordedRate
+      reasonsRecordedRate: 100,
+      currentBottleneck
     };
-  }, [batches, qualityChecks, productionRuns, rejections]);
+  }, [categoryBatches, categoryQualityChecks, categoryProductionRuns, categoryRejections, activeCategory, activeWorkflow]);
 
-  // Breakdown by reasons
+  // Breakdown by reasons for active category
   const rejectionsByReason = useMemo(() => {
-    const counts: Record<string, number> = {
-      'Dimension Variance': 0,
-      'Assembly Issue': 0,
-      'Surface Defect': 0,
-      'Other': 0
-    };
-    rejections.forEach(r => {
+    const counts: Record<string, number> = {};
+    activeWorkflow.defaultRejectionReasons.forEach(r => { counts[r] = 0; });
+
+    categoryRejections.forEach(r => {
       counts[r.rejection_reason] = (counts[r.rejection_reason] || 0) + r.rejected_quantity;
     });
+
     const total = Object.values(counts).reduce((a, b) => a + b, 0) || 1;
     return Object.entries(counts).map(([reason, count]) => ({
       reason,
       count,
       percentage: Math.round((count / total) * 100)
-    }));
-  }, [rejections]);
+    })).sort((a, b) => b.count - a.count);
+  }, [categoryRejections, activeWorkflow]);
 
-  // Breakdown by stages
+  // Breakdown by stages for active category
   const rejectionsByStage = useMemo(() => {
-    const stages = ['Cutting', 'Assembly', 'Inspection', 'Finishing', 'Packing'];
-    const map: Record<string, number> = {
-      Cutting: 0,
-      Assembly: 0,
-      Inspection: 0,
-      Finishing: 0,
-      Packing: 0
-    };
-    rejections.forEach(r => {
+    const map: Record<string, number> = {};
+    activeWorkflow.stages.forEach(stg => { map[stg.name] = 0; });
+
+    categoryRejections.forEach(r => {
       if (map[r.production_stage] !== undefined) {
         map[r.production_stage] += r.rejected_quantity;
       } else {
         map['Other'] = (map['Other'] || 0) + r.rejected_quantity;
       }
     });
-    return stages.map(stage => ({
-      stage,
-      count: map[stage] || 0
-    }));
-  }, [rejections]);
 
-  // Stage progress summary for Overview
+    return activeWorkflow.stages.map(stg => ({
+      stage: stg.name,
+      count: map[stg.name] || 0
+    }));
+  }, [categoryRejections, activeWorkflow]);
+
+  // Stage progress summary derived dynamically from active category workflow
   const stageProgressSummary = useMemo(() => {
-    const stages: ProductionStageName[] = ['Cutting', 'Assembly', 'Inspection', 'Packing'];
-    return stages.map(stg => {
-      const active = batches.filter(b => b.current_stage === stg && b.status === 'In Progress').length;
-      const waiting = batches.filter(b => b.current_stage === stg && b.status === 'Waiting').length;
+    return activeWorkflow.stages.map(stg => {
+      const active = categoryBatches.filter(b => b.current_stage === stg.name && b.status === 'In Progress').length;
+      const waiting = categoryBatches.filter(b => b.current_stage === stg.name && b.status === 'Waiting').length;
       let status: 'Normal' | 'Minor bottleneck' | 'On track' | 'Clear' = 'Normal';
-      if (waiting > 1) status = 'Minor bottleneck';
-      else if (active > 0) status = 'On track';
-      else status = 'Clear';
+      
+      if (stg.status === 'Delayed' || waiting > 0 || stg.status === 'Waiting') {
+        status = 'Minor bottleneck';
+      } else if (active > 0) {
+        status = 'On track';
+      } else {
+        status = 'Clear';
+      }
 
       return {
-        stage: stg,
+        stage: stg.name,
         activeCount: active,
         waitingCount: waiting,
         status
       };
     });
-  }, [batches]);
+  }, [categoryBatches, activeWorkflow]);
 
   // Actions
   const logActivity = (
@@ -303,6 +422,7 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   ) => {
     const newLog: ActivityLog = {
       id: `act-${Date.now()}`,
+      category: activeCategory,
       entity_type,
       entity_id,
       action,
@@ -314,20 +434,83 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setActivityLogs(prev => [newLog, ...prev]);
   };
 
+  const updateWorkflowStageStatus = (
+    categoryId: ProductCategory,
+    stageId: string,
+    status: LineStageStatus,
+    note?: string
+  ) => {
+    setWorkflows(prev => {
+      const currentWf = prev[categoryId];
+      if (!currentWf) return prev;
+      const targetStage = currentWf.stages.find(s => s.id === stageId);
+      const prevStatus = targetStage?.status;
+
+      const updatedStages = currentWf.stages.map(stg => {
+        if (stg.id !== stageId) return stg;
+        return {
+          ...stg,
+          status,
+          waitingReason: status === 'Waiting' || status === 'Delayed' ? (note || stg.waitingReason) : undefined,
+          alertMessage: status === 'Delayed' 
+            ? (note || 'Critical delay detected') 
+            : status === 'Waiting' 
+            ? (note || 'Bottleneck awaiting input') 
+            : undefined
+        };
+      });
+
+      logActivity(
+        'line_stage',
+        stageId,
+        `Line Stage Status: ${targetStage?.name || stageId}`,
+        prevStatus,
+        status
+      );
+
+      return {
+        ...prev,
+        [categoryId]: {
+          ...currentWf,
+          stages: updatedStages
+        }
+      };
+    });
+  };
+
+  const updateWorkflowStages = (categoryId: ProductCategory, stages: WorkflowStage[]) => {
+    setWorkflows(prev => ({
+      ...prev,
+      [categoryId]: {
+        ...prev[categoryId],
+        stages
+      }
+    }));
+    logActivity('line_stage', `wf-${categoryId}`, 'Workflow Stages Reconfigured', undefined, `${stages.length} stages`);
+  };
+
   const addBatch = (batchData: Omit<Batch, 'id' | 'created_at' | 'updated_at'>) => {
     const newId = `b-${Date.now().toString().slice(-4)}`;
+    const categoryToUse = batchData.category || activeCategory;
+    const catWorkflow = workflows[categoryToUse] || activeWorkflow;
+    const firstStage = catWorkflow.stages[0]?.name || 'PCB / SMT Preparation';
+
     const newBatch: Batch = {
       ...batchData,
       id: newId,
+      category: categoryToUse,
+      current_stage: batchData.current_stage || firstStage,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      stages_history: [
-        { id: `sh-${Date.now()}-1`, batch_id: newId, stage_name: 'Cutting', status: 'Current', started_at: new Date().toISOString() },
-        { id: `sh-${Date.now()}-2`, batch_id: newId, stage_name: 'Assembly', status: 'Pending' },
-        { id: `sh-${Date.now()}-3`, batch_id: newId, stage_name: 'Inspection', status: 'Pending' },
-        { id: `sh-${Date.now()}-4`, batch_id: newId, stage_name: 'Packing', status: 'Pending' }
-      ]
+      stages_history: catWorkflow.stages.map((stg, i) => ({
+        id: `sh-${newId}-${i}`,
+        batch_id: newId,
+        stage_name: stg.name,
+        status: i === 0 ? 'Current' : 'Pending',
+        started_at: i === 0 ? new Date().toISOString() : undefined
+      }))
     };
+
     setBatches(prev => [newBatch, ...prev]);
     setSelectedBatchId(newId);
     logActivity('batch', newId, 'Batch Created', undefined, `${newBatch.batch_code} (${newBatch.product_name})`);
@@ -347,7 +530,7 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return sh;
       });
 
-      const isCompleted = nextStage === 'Completed';
+      const isCompleted = nextStage === 'Completed' || nextStage === 'Final Inspection & Packing' && notes === 'complete';
       const updatedBatch: Batch = {
         ...b,
         current_stage: nextStage,
@@ -392,7 +575,6 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       logActivity('quality_check', qc.id, 'Inspection Recorded', prevResult, `${result} - ${observations.slice(0, 40)}`);
 
-      // If quality check fails or needs review, automatically flag the batch or alert
       if (result === 'Fail') {
         updateBatchStatus(qc.batch_id, 'On Hold', `Quarantined by QC Inspector: ${observations}`);
       }
@@ -406,6 +588,7 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const newCheck: QualityCheck = {
       ...check,
       id: newId,
+      category: check.category || activeCategory,
       created_at: new Date().toISOString()
     };
     setQualityChecks(prev => [newCheck, ...prev]);
@@ -413,10 +596,6 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     logActivity('quality_check', newId, 'Quality Check Scheduled', undefined, `${newCheck.check_type} for ${newCheck.batch_code}`);
   };
 
-  // Automated Readiness engine logic:
-  // A run is marked Ready ONLY when every mandatory requirement is confirmed ('Ready' or 'Not Applicable').
-  // A run is Blocked when ANY mandatory requirement is 'Missing'.
-  // A run is At Risk when 1 or more requirements are 'Pending' (and none are 'Missing').
   const calculateRunStatus = (requirements: ProductionRun['requirements']): ReadinessStatus => {
     const hasMissing = requirements.some(r => r.status === 'Missing');
     if (hasMissing) return 'Blocked';
@@ -456,15 +635,19 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       return false;
     }
 
-    // Convert production run into an active batch!
-    const newBatchCode = `B-${Math.floor(2400 + Math.random() * 90)}`;
+    const catPrefix = activeCategory.slice(0, 2).toUpperCase();
+    const newBatchCode = `B-${catPrefix}-${Math.floor(200 + Math.random() * 800)}`;
+    const catWorkflow = workflows[targetRun.category] || activeWorkflow;
+    const firstStage = catWorkflow.stages[0]?.name || 'PCB / SMT Preparation';
+
     addBatch({
       batch_code: newBatchCode,
+      category: targetRun.category,
       product_id: targetRun.product_id,
       product_name: targetRun.product_name,
       planned_quantity: 350,
       completed_quantity: 0,
-      current_stage: 'Cutting',
+      current_stage: firstStage,
       status: 'In Progress',
       assigned_to: `${targetRun.supervisor} / Shift Lead`,
       target_line: targetRun.target_line,
@@ -481,6 +664,7 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const newRejection: Rejection = {
       ...rejectionData,
       id: newId,
+      category: rejectionData.category || activeCategory,
       created_at: new Date().toISOString()
     };
     setRejections(prev => [newRejection, ...prev]);
@@ -496,12 +680,16 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const resetToDefaultData = () => {
+    setActiveCategory('Lighting');
+    setWorkflows(INITIAL_WORKFLOWS);
     setBatches(INITIAL_BATCHES);
     setQualityChecks(INITIAL_QUALITY_CHECKS);
     setProductionRuns(INITIAL_PRODUCTION_RUNS);
     setRejections(INITIAL_REJECTIONS);
     setActivityLogs(INITIAL_ACTIVITY_LOGS);
     setNotifications(INITIAL_NOTIFICATIONS);
+    localStorage.removeItem(`${STORAGE_KEY}_active_cat`);
+    localStorage.removeItem(`${STORAGE_KEY}_workflows`);
     localStorage.removeItem(`${STORAGE_KEY}_batches`);
     localStorage.removeItem(`${STORAGE_KEY}_qc`);
     localStorage.removeItem(`${STORAGE_KEY}_runs`);
@@ -519,6 +707,15 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setCurrentUserRole,
         searchQuery,
         setSearchQuery,
+        activeCategory,
+        setActiveCategory,
+        availableCategories: LUKER_CATEGORIES,
+        workflows,
+        activeWorkflow,
+        selectedStageId,
+        setSelectedStageId,
+        updateWorkflowStageStatus,
+        updateWorkflowStages,
         selectedBatchId,
         setSelectedBatchId,
         selectedRunId,
@@ -532,6 +729,11 @@ export const FloorFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         activityLogs,
         notifications,
         products: INITIAL_PRODUCTS,
+        categoryBatches,
+        categoryQualityChecks,
+        categoryProductionRuns,
+        categoryRejections,
+        categoryProducts,
         kpis,
         rejectionsByReason,
         rejectionsByStage,

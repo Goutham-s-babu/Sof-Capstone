@@ -6,14 +6,19 @@ import {
   AlertTriangle,
   ChevronDown,
   Database,
-  ExternalLink,
-  Shield,
   Menu,
-  X
+  X,
+  Zap,
+  Lightbulb,
+  Fan,
+  Cable,
+  Cpu,
+  Flame,
+  Building2
 } from 'lucide-react';
 import { useFloorFlow, FloorFlowRoute } from '../../context/FloorFlowContext';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
-import { UserRole } from '../../types/floorflow';
+import { UserRole, ProductCategory } from '../../types/floorflow';
 
 export const Header: React.FC = () => {
   const {
@@ -26,7 +31,10 @@ export const Header: React.FC = () => {
     notifications,
     markNotificationAsRead,
     clearAllNotifications,
-    setSelectedBatchId
+    setSelectedBatchId,
+    activeCategory,
+    setActiveCategory,
+    availableCategories
   } = useFloorFlow();
 
   const [showNotifs, setShowNotifs] = useState(false);
@@ -70,19 +78,40 @@ export const Header: React.FC = () => {
     setShowNotifs(false);
   };
 
+  const getCategoryIcon = (category: ProductCategory) => {
+    switch (category) {
+      case 'Lighting':
+        return <Lightbulb className="w-3.5 h-3.5" />;
+      case 'Fans':
+        return <Fan className="w-3.5 h-3.5" />;
+      case 'Wires':
+        return <Cable className="w-3.5 h-3.5" />;
+      case 'Switchgear':
+        return <Cpu className="w-3.5 h-3.5" />;
+      case 'Water Heaters':
+        return <Flame className="w-3.5 h-3.5" />;
+      default:
+        return <Zap className="w-3.5 h-3.5" />;
+    }
+  };
+
   return (
-    <header className="w-full pt-4 pb-2 px-4 md:px-8">
-      {/* Top Bar */}
+    <header className="w-full pt-4 pb-2 px-4 md:px-8 space-y-3">
+      {/* Top Bar: Brand, Greeting, Search & User profile */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Left: Greeting & Subtitle */}
+        {/* Left: Greeting & Luker Electric Technologies Subtitle */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-[#1A201C]">
-              Good morning, team
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#EDF3F0] text-[#3D5B4A] border border-[#D5E2DB]">
+                <Building2 className="w-3 h-3" />
+                Luker Electric Technologies
+              </span>
+              <span className="text-[11px] text-[#8C9890] hidden sm:inline">• Floor Operations Visibility</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#1A201C] mt-1">
+              Manufacturing Operations Visibility
             </h1>
-            <p className="text-xs md:text-sm text-[#748078] mt-0.5">
-              Here&apos;s what&apos;s happening across your production floor today.
-            </p>
           </div>
 
           {/* Mobile hamburger */}
@@ -97,19 +126,19 @@ export const Header: React.FC = () => {
         {/* Right Controls: Search, Notifications, Profile */}
         <div className="flex items-center gap-3">
           {/* Search Pill */}
-          <div className="relative flex-1 md:w-72 lg:w-80">
+          <div className="relative flex-1 md:w-64 lg:w-72">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search batches, products, runs..."
-              className="w-full bg-white pl-4 pr-11 py-2.5 rounded-full border border-[#E0DED6] text-xs md:text-sm text-[#1A201C] placeholder-[#8E9B93] focus:outline-none focus:border-[#557764] shadow-[0_2px_12px_rgba(20,30,25,0.03)] transition-all"
+              placeholder="Search batches, runs..."
+              className="w-full bg-white pl-4 pr-10 py-2 rounded-full border border-[#E0DED6] text-xs text-[#1A201C] placeholder-[#8E9B93] focus:outline-none focus:border-[#557764] shadow-[0_2px_12px_rgba(20,30,25,0.03)] transition-all"
             />
             <button
               onClick={() => {}}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#1A201C] text-white flex items-center justify-center hover:bg-[#323D36] transition-colors"
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#1A201C] text-white flex items-center justify-center hover:bg-[#323D36] transition-colors"
             >
-              <Search className="w-3.5 h-3.5" />
+              <Search className="w-3 h-3" />
             </button>
           </div>
 
@@ -117,7 +146,7 @@ export const Header: React.FC = () => {
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setShowNotifs(!showNotifs)}
-              className="relative w-10 h-10 rounded-full bg-white border border-[#E0DED6] flex items-center justify-center text-[#55635B] hover:text-[#1A201C] hover:border-[#CFCCC2] shadow-[0_2px_10px_rgba(20,30,25,0.03)] transition-all"
+              className="relative w-9 h-9 rounded-full bg-white border border-[#E0DED6] flex items-center justify-center text-[#55635B] hover:text-[#1A201C] hover:border-[#CFCCC2] shadow-[0_2px_10px_rgba(20,30,25,0.03)] transition-all"
             >
               <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
@@ -181,20 +210,17 @@ export const Header: React.FC = () => {
           <div className="relative" ref={roleRef}>
             <button
               onClick={() => setShowRoleMenu(!showRoleMenu)}
-              className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-full bg-white border border-[#E0DED6] shadow-[0_2px_10px_rgba(20,30,25,0.03)] hover:border-[#CFCCC2] transition-all"
+              className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white border border-[#E0DED6] shadow-[0_2px_10px_rgba(20,30,25,0.03)] hover:border-[#CFCCC2] transition-all"
             >
-              <div className="w-7 h-7 rounded-full bg-[#557764] text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-6 h-6 rounded-full bg-[#557764] text-white flex items-center justify-center font-bold text-xs">
                 {currentUserRole.slice(0, 1)}
               </div>
               <div className="hidden sm:block text-left">
                 <p className="text-xs font-semibold text-[#1A201C] leading-tight">
                   {currentUserRole}
                 </p>
-                <p className="text-[10px] text-[#7A8780] leading-tight">
-                  Floor Operations
-                </p>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-[#7A8780]" />
+              <ChevronDown className="w-3 h-3 text-[#7A8780]" />
             </button>
 
             {/* Role Switcher Menu */}
@@ -233,21 +259,65 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
+      {/* SECTION 3: PRODUCT WORKSPACE CATEGORY SELECTOR */}
+      {/* Clean compact horizontal selector with clear active state */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-[#E5E3DB]">
+        <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#7E8B83] mr-1 hidden lg:inline">
+            Workspace:
+          </span>
+          {availableCategories.map((cat) => {
+            const isActive = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-[#1A201C] text-white shadow-[0_2px_10px_rgba(26,32,28,0.25)] ring-1 ring-[#1A201C]'
+                    : 'bg-white text-[#526058] hover:text-[#1A201C] hover:bg-[#FAF9F5] border border-[#E0DED6]'
+                }`}
+              >
+                <span className={isActive ? 'text-white' : 'text-[#557764]'}>
+                  {getCategoryIcon(cat)}
+                </span>
+                <span>{cat}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active Workspace Status Badge */}
+        <div className="hidden md:flex items-center gap-2 text-xs text-[#717E76]">
+          <span>Active Product:</span>
+          <span className="font-semibold text-[#1A201C] bg-white px-2.5 py-1 rounded-full border border-[#E0DED6]">
+            {activeCategory} Operations
+          </span>
+        </div>
+      </div>
+
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden mt-3 p-3 bg-white rounded-2xl border border-[#E2E0D8] shadow-md flex flex-col gap-2">
-          {(['/overview', '/batches', '/quality', '/readiness', '/rejections'] as FloorFlowRoute[]).map((r) => (
+          {([
+            { r: '/overview', label: 'Overview' },
+            { r: '/line-monitor', label: 'Line Monitor' },
+            { r: '/batches', label: 'Batches' },
+            { r: '/quality', label: 'Quality' },
+            { r: '/readiness', label: 'Readiness' },
+            { r: '/rejections', label: 'Rejections' }
+          ] as { r: FloorFlowRoute; label: string }[]).map((item) => (
             <button
-              key={r}
+              key={item.r}
               onClick={() => {
-                setCurrentRoute(r);
+                setCurrentRoute(item.r);
                 setMobileMenuOpen(false);
               }}
               className={`px-3 py-2 text-xs font-semibold rounded-xl text-left capitalize ${
-                currentRoute === r ? 'bg-[#1A201C] text-white' : 'text-[#55635B] hover:bg-[#F5F4EE]'
+                currentRoute === item.r ? 'bg-[#1A201C] text-white' : 'text-[#55635B] hover:bg-[#F5F4EE]'
               }`}
             >
-              {r.replace('/', '')}
+              {item.label}
             </button>
           ))}
         </div>

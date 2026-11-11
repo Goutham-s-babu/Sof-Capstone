@@ -3,6 +3,7 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { useFloorFlow } from '../../context/FloorFlowContext';
 import { OverviewPage } from '../../pages/floorflow/OverviewPage';
+import { LineMonitorPage } from '../../pages/floorflow/LineMonitorPage';
 import { BatchesPage } from '../../pages/floorflow/BatchesPage';
 import { QualityPage } from '../../pages/floorflow/QualityPage';
 import { ReadinessPage } from '../../pages/floorflow/ReadinessPage';
@@ -15,6 +16,8 @@ export const FloorFlowApp: React.FC = () => {
     switch (currentRoute) {
       case '/overview':
         return <OverviewPage />;
+      case '/line-monitor':
+        return <LineMonitorPage />;
       case '/batches':
         return <BatchesPage />;
       case '/quality':

@@ -11,12 +11,16 @@ import {
   ShieldCheck,
   ChevronRight,
   Save,
-  AlertTriangle
+  AlertTriangle,
+  Tag,
+  Sliders,
+  X,
+  Info
 } from 'lucide-react';
 import { useFloorFlow } from '../../context/FloorFlowContext';
 import { KPICard } from '../../components/floorflow/KPICard';
 import { StatusBadge } from '../../components/floorflow/StatusBadge';
-import { QualityCheck, QualityResult } from '../../types/floorflow';
+import { QualityCheck, QualityResult, ProductCategory } from '../../types/floorflow';
 
 export const QualityPage: React.FC = () => {
   const {
@@ -27,9 +31,12 @@ export const QualityPage: React.FC = () => {
     setSelectedQualityCheckId,
     recordQualityCheck,
     addQualityCheck,
+    activeCategory,
+    activeWorkflow,
     searchQuery: globalSearch
   } = useFloorFlow();
 
+  const [categoryScope, setCategoryScope] = useState<'Active' | 'All'>('Active');
   const [filterResult, setFilterResult] = useState<string>('All');
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [localSearch, setLocalSearch] = useState<string>('');
@@ -58,7 +65,9 @@ export const QualityPage: React.FC = () => {
   // New inspection modal
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
   const [newBatchId, setNewBatchId] = useState(batches[0]?.id || '');
-  const [newCheckType, setNewCheckType] = useState('Dimensional & Tolerance Verification');
+  const [newCheckType, setNewCheckType] = useState(activeWorkflow.defaultInspectionTypes[0] || 'High-Pot & Electrical Isolation');
+  const [customCheckType, setCustomCheckType] = useState('');
+  const [isCustomType, setIsCustomType] = useState(false);
   const [newInspector, setNewInspector] = useState('Marcus Vance');
   const [newDueTime, setNewDueTime] = useState('14:30 PM');
 
@@ -66,10 +75,15 @@ export const QualityPage: React.FC = () => {
   const filteredChecks = useMemo(() => {
     const q = (localSearch || globalSearch).toLowerCase().trim();
     return qualityChecks.filter(check => {
+      if (categoryScope === 'Active' && check.category !== activeCategory) {
+        return false;
+      }
+
       const matchSearch = !q ||
         check.batch_code.toLowerCase().includes(q) ||
         check.product_name.toLowerCase().includes(q) ||
         check.check_type.toLowerCase().includes(q) ||
+        (check.category && check.category.toLowerCase().includes(q)) ||
         check.inspector.toLowerCase().includes(q);
 
       const matchResult = filterResult === 'All' || check.result === filterResult;
@@ -77,7 +91,7 @@ export const QualityPage: React.FC = () => {
 
       return matchSearch && matchResult && matchStatus;
     });
-  }, [qualityChecks, localSearch, globalSearch, filterResult, filterStatus]);
+  }, [qualityChecks, localSearch, globalSearch, categoryScope, activeCategory, filterResult, filterStatus]);
 
   const handleSaveInspection = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,11 +104,14 @@ export const QualityPage: React.FC = () => {
   const handleScheduleInspection = (e: React.FormEvent) => {
     e.preventDefault();
     const batch = batches.find(b => b.id === newBatchId) || batches[0];
+    const finalCheckType = isCustomType && customCheckType.trim() ? customCheckType.trim() : newCheckType;
+
     addQualityCheck({
+      category: batch.category || activeCategory,
       batch_id: batch.id,
       batch_code: batch.batch_code,
       product_name: batch.product_name,
-      check_type: newCheckType,
+      check_type: finalCheckType,
       inspector: newInspector,
       due_at: newDueTime,
       result: 'Pending',
@@ -102,6 +119,8 @@ export const QualityPage: React.FC = () => {
       status: 'Scheduled'
     });
     setIsNewModalOpen(false);
+    setCustomCheckType('');
+    setIsCustomType(false);
   };
 
   return (
@@ -109,21 +128,42 @@ export const QualityPage: React.FC = () => {
       {/* Page Title & Schedule Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-[#1A201C] tracking-tight">
-            Quality Checks
-          </h2>
-          <p className="text-xs text-[#717E76]">
-            Strict verification logs, inspection worklists, and non-conformance records
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl md:text-2xl font-bold text-[#1A201C] tracking-tight">
+              Quality Checks
+            </h2>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EDF3F0] text-[#3D5B4A] border border-[#D5E2DB]">
+              {categoryScope === 'Active' ? `${activeCategory} Standards` : 'All Categories'}
+            </span>
+          </div>
+          <p className="text-xs text-[#717E76] mt-0.5">
+            Configurable testing verification for {activeCategory} • Pass/Fail auditing & quarantine control
           </p>
         </div>
 
         <button
-          onClick={() => setIsNewModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#557764] text-white text-xs font-semibold hover:bg-[#486756] shadow-[0_3px_12px_rgba(85,119,100,0.25)] transition-all cursor-pointer self-start sm:self-auto"
+          onClick={() => {
+            setNewCheckType(activeWorkflow.defaultInspectionTypes[0] || 'Electrical Isolation');
+            setIsNewModalOpen(true);
+          }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#1A201C] text-white text-xs font-semibold hover:bg-[#323D36] shadow-[0_3px_12px_rgba(26,32,28,0.25)] transition-all cursor-pointer self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Schedule Inspection</span>
+          <span>Schedule {activeCategory} Inspection</span>
         </button>
+      </div>
+
+      {/* Illustrative Notice & AI Safeguard Banner */}
+      <div className="bg-[#FAF9F5] border border-[#E2E0D8] rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#6A7870]">
+        <div className="flex items-center gap-2">
+          <Info className="w-4 h-4 text-[#557764] flex-shrink-0" />
+          <span>
+            <strong>Configurable Testing Parameters:</strong> Inspection types adapt to each product category (e.g. electrical surge, lumen output for Lighting; RPM, balance, noise for Fans).
+          </span>
+        </div>
+        <span className="text-[11px] font-semibold text-[#8C9890] bg-white px-2.5 py-1 rounded-full border border-[#E2E0D8] whitespace-nowrap">
+          Inspector Sign-off Required
+        </span>
       </div>
 
       {/* 4 KPI Cards */}
@@ -131,13 +171,13 @@ export const QualityPage: React.FC = () => {
         <KPICard
           label="Checks Scheduled"
           value={String(kpis.qualityChecksScheduled).padStart(2, '0')}
-          subtitle="Total inspections in shift plan"
+          subtitle={`Plan for ${activeCategory}`}
           badge="Shift Target"
         />
         <KPICard
           label="Checks Completed"
           value={String(kpis.qualityChecksCompleted).padStart(2, '0')}
-          subtitle={`${kpis.qualityCompletionRate}% completion rate recorded`}
+          subtitle={`${kpis.qualityCompletionRate}% signoff rate`}
           badge="Signed Off"
         />
         <KPICard
@@ -149,14 +189,14 @@ export const QualityPage: React.FC = () => {
         <KPICard
           label="Checks Failed"
           value={String(kpis.qualityChecksFailed).padStart(2, '0')}
-          subtitle="Non-conforming units quarantined"
+          subtitle="Non-conforming lots quarantined"
           badge="Quarantine"
         />
       </div>
 
       {/* Main Grid: Worklist (65%) & Recording Interface (35%) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Inspection Worklist Table (7 or 8 cols) */}
+        {/* Left: Inspection Worklist Table (8 cols) */}
         <div className="lg:col-span-8 bg-white p-6 rounded-[24px] border border-[#E2E0D8] shadow-[0_4px_16px_rgba(30,40,35,0.03)] flex flex-col justify-between">
           <div>
             {/* Filter Toolbar */}
@@ -173,6 +213,30 @@ export const QualityPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
+                {/* Scope Switcher */}
+                <div className="inline-flex p-0.5 bg-[#FAF9F5] rounded-full border border-[#E5E3DC] text-xs">
+                  <button
+                    onClick={() => setCategoryScope('Active')}
+                    className={`px-3 py-1 rounded-full font-medium transition-all ${
+                      categoryScope === 'Active'
+                        ? 'bg-white text-[#1A201C] font-semibold shadow-xs'
+                        : 'text-[#6C7A72] hover:text-[#1A201C]'
+                    }`}
+                  >
+                    {activeCategory} Only
+                  </button>
+                  <button
+                    onClick={() => setCategoryScope('All')}
+                    className={`px-3 py-1 rounded-full font-medium transition-all ${
+                      categoryScope === 'All'
+                        ? 'bg-white text-[#1A201C] font-semibold shadow-xs'
+                        : 'text-[#6C7A72] hover:text-[#1A201C]'
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                </div>
+
                 <select
                   value={filterResult}
                   onChange={(e) => setFilterResult(e.target.value)}
@@ -204,6 +268,7 @@ export const QualityPage: React.FC = () => {
                 <thead>
                   <tr className="border-b border-[#ECEAE2] text-[11px] font-semibold text-[#808C84] uppercase tracking-wider">
                     <th className="py-3 px-3">Batch ID</th>
+                    <th className="py-3 px-3">Category</th>
                     <th className="py-3 px-3">Product</th>
                     <th className="py-3 px-3">Inspection Type</th>
                     <th className="py-3 px-3">Inspector</th>
@@ -230,10 +295,15 @@ export const QualityPage: React.FC = () => {
                             {qc.batch_code}
                           </span>
                         </td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#FAF9F5] text-[#55635B] border border-[#E2E0D8]">
+                            {qc.category || activeCategory}
+                          </span>
+                        </td>
                         <td className="py-3.5 px-3 font-medium text-[#1A201C]">
                           {qc.product_name}
                         </td>
-                        <td className="py-3.5 px-3 text-[#526058]">
+                        <td className="py-3.5 px-3 text-[#526058] max-w-[200px] truncate" title={qc.check_type}>
                           {qc.check_type}
                         </td>
                         <td className="py-3.5 px-3 text-[#526058]">
@@ -253,13 +323,13 @@ export const QualityPage: React.FC = () => {
                               e.stopPropagation();
                               setSelectedQualityCheckId(qc.id);
                             }}
-                            className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                            className={`p-1.5 rounded-lg transition-colors ${
                               isSelected
                                 ? 'bg-[#557764] text-white'
-                                : 'bg-[#FAF9F5] text-[#55635B] hover:bg-[#EAE8E0] hover:text-[#1A201C]'
+                                : 'text-[#7B8881] hover:text-[#1A201C] hover:bg-white'
                             }`}
                           >
-                            {qc.result === 'Pending' ? 'Record' : 'Review'}
+                            <ChevronRight className="w-4 h-4" />
                           </button>
                         </td>
                       </tr>
@@ -270,91 +340,69 @@ export const QualityPage: React.FC = () => {
 
               {filteredChecks.length === 0 && (
                 <div className="text-center py-12 text-xs text-[#8A968F]">
-                  No inspection records match the current filter.
+                  No quality checks recorded for {categoryScope === 'Active' ? activeCategory : 'the active filters'}.
                 </div>
               )}
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-[#F0EFE8] flex items-center justify-between text-xs text-[#7B8881]">
-            <span>Showing {filteredChecks.length} inspections</span>
-            <span className="text-[#C2781D] font-medium">1 overdue verification requires signoff</span>
+            <span>Showing {filteredChecks.length} inspection records</span>
+            <span className="text-[#557764] font-medium">Standards Mode: Configurable</span>
           </div>
         </div>
 
-        {/* Right: Inspection Recording Interface (4 cols) */}
+        {/* Right: Inspection Recording Form (4 cols) */}
         {selectedCheck ? (
           <div className="lg:col-span-4 bg-white p-6 rounded-[24px] border border-[#E2E0D8] shadow-[0_4px_16px_rgba(30,40,35,0.03)] flex flex-col justify-between">
-            <form onSubmit={handleSaveInspection} className="flex-1 flex flex-col justify-between">
-              <div>
-                {/* Header */}
-                <div className="flex items-start justify-between pb-4 border-b border-[#F0EFE9] mb-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-[#1A201C]">
-                        Record Inspection
-                      </h3>
-                      <StatusBadge status={selectedCheck.result} size="sm" />
-                    </div>
-                    <p className="text-xs text-[#76837C] mt-0.5">
-                      Batch {selectedCheck.batch_code} — {selectedCheck.product_name}
-                    </p>
+            <div>
+              <div className="flex items-start justify-between pb-4 border-b border-[#F0EFE9]">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold text-[#1A201C]">
+                      Record Verification Sign-off
+                    </h3>
                   </div>
+                  <p className="text-xs text-[#717E76] mt-0.5">
+                    Target: <span className="font-semibold text-[#1A201C]">{selectedCheck.batch_code}</span> ({selectedCheck.product_name})
+                  </p>
+                  <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#EDF3F0] text-[#3D5B4A]">
+                    <Tag className="w-2.5 h-2.5" />
+                    {selectedCheck.category || activeCategory}
+                  </span>
                 </div>
+                <StatusBadge status={selectedCheck.result} size="sm" />
+              </div>
 
-                {saveSuccess && (
-                  <div className="mb-4 p-3 bg-[#EBF6EF] rounded-xl border border-[#C8E6D3] text-xs text-[#2E7D4C] flex items-center gap-2 animate-fade-in">
-                    <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                    <span>Inspection recorded successfully! Linked to batch.</span>
-                  </div>
-                )}
-
-                {/* Inspection Scope Info */}
-                <div className="p-3 bg-[#FAF9F5] rounded-2xl border border-[#ECE9E1] space-y-2 mb-4 text-xs">
-                  <div>
-                    <span className="text-[10px] text-[#86928B] block">Required Inspection:</span>
-                    <span className="font-semibold text-[#1A201C]">{selectedCheck.check_type}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#F0EFEA]">
-                    <div>
-                      <span className="text-[10px] text-[#86928B] block">Scheduled Due:</span>
-                      <span className="font-mono text-[#1A201C]">{selectedCheck.due_at}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-[#86928B] block">Status:</span>
-                      <span className="font-medium text-[#1A201C]">{selectedCheck.status}</span>
-                    </div>
-                  </div>
+              {/* Inspection Parameters Strip */}
+              <div className="my-4 p-3 bg-[#FAF9F5] rounded-2xl border border-[#ECE9E1] text-xs space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-[#78857E]">Inspection Type:</span>
+                  <span className="font-semibold text-[#1A201C] text-right ml-2">{selectedCheck.check_type}</span>
                 </div>
-
-                {/* Inspector Selection */}
-                <div className="mb-4">
-                  <label className="block text-xs font-semibold text-[#1A201C] mb-1">
-                    Certified Inspector <span className="text-[#C53939]">*</span>
-                  </label>
-                  <select
-                    value={activeInspector}
-                    onChange={(e) => setActiveInspector(e.target.value)}
-                    className="w-full bg-[#FAF9F5] px-3.5 py-2.5 rounded-xl border border-[#E0DED6] text-xs text-[#1A201C] focus:outline-none focus:border-[#557764]"
-                  >
-                    <option value="Marcus Vance">Marcus Vance (Lead QA)</option>
-                    <option value="Elena Rostova">Elena Rostova (NDT Level II)</option>
-                    <option value="David Chen">David Chen (Metrology Specialist)</option>
-                  </select>
+                <div className="flex justify-between">
+                  <span className="text-[#78857E]">Assigned Inspector:</span>
+                  <span className="font-semibold text-[#1A201C]">{selectedCheck.inspector}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-[#78857E]">Scheduled Due:</span>
+                  <span className="font-mono text-[#557764] font-semibold">{selectedCheck.due_at}</span>
+                </div>
+              </div>
 
-                {/* Result Pill Selector (Pass, Needs Review, Fail) */}
-                <div className="mb-4">
-                  <label className="block text-xs font-semibold text-[#1A201C] mb-1.5">
-                    Inspection Result <span className="text-[#C53939]">*</span>
+              <form onSubmit={handleSaveInspection} className="space-y-4">
+                {/* Result Radios: Pass, Needs Review, Fail */}
+                <div>
+                  <label className="block text-xs font-bold text-[#1A201C] uppercase tracking-wider mb-2">
+                    Inspection Outcome
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {(['Pass', 'Needs Review', 'Fail'] as QualityResult[]).map((res) => {
-                      const isChosen = selectedResult === res;
-                      const activeStyles = {
-                        Pass: 'bg-[#2E7D4C] text-white border-[#2E7D4C] shadow-sm',
-                        'Needs Review': 'bg-[#C2781D] text-white border-[#C2781D] shadow-sm',
-                        Fail: 'bg-[#C53939] text-white border-[#C53939] shadow-sm',
+                      const isChecked = selectedResult === res;
+                      const colors = {
+                        Pass: isChecked ? 'bg-[#EBF6EF] text-[#2E7D4C] border-[#2E7D4C]' : 'border-[#E0DED6]',
+                        'Needs Review': isChecked ? 'bg-[#FEF5E7] text-[#C2781D] border-[#C2781D]' : 'border-[#E0DED6]',
+                        Fail: isChecked ? 'bg-[#FDF0F0] text-[#C53939] border-[#C53939]' : 'border-[#E0DED6]',
                         Pending: ''
                       }[res];
 
@@ -363,11 +411,7 @@ export const QualityPage: React.FC = () => {
                           key={res}
                           type="button"
                           onClick={() => setSelectedResult(res)}
-                          className={`py-2 px-1 text-center rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                            isChosen
-                              ? activeStyles
-                              : 'bg-[#FAF9F5] text-[#55635B] border-[#E0DED6] hover:bg-[#F2EFE9]'
-                          }`}
+                          className={`py-2 px-2 rounded-xl border text-xs font-bold transition-all ${colors} hover:shadow-xs`}
                         >
                           {res}
                         </button>
@@ -376,53 +420,82 @@ export const QualityPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Observations Textarea */}
-                <div className="mb-4">
+                {/* Inspector Input */}
+                <div>
                   <label className="block text-xs font-semibold text-[#1A201C] mb-1">
-                    Observations & Defect Notes <span className="text-[#C53939]">*</span>
+                    Inspector Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={activeInspector}
+                    onChange={(e) => setActiveInspector(e.target.value)}
+                    className="w-full bg-[#FAF9F5] px-3.5 py-2 rounded-xl border border-[#E0DED6] text-xs text-[#1A201C] focus:outline-none focus:border-[#557764]"
+                  />
+                </div>
+
+                {/* Observations & Test Readings */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#1A201C] mb-1">
+                    Readings & Laboratory Observations
                   </label>
                   <textarea
                     rows={4}
                     required
                     value={observations}
                     onChange={(e) => setObservations(e.target.value)}
-                    placeholder="Enter calibrated measurements, tolerance variance, or visual defect notes..."
+                    placeholder="E.g. Output wattage 18.2W, Surge immunity passed at 4kV, no leakage detected..."
                     className="w-full bg-[#FAF9F5] p-3 rounded-xl border border-[#E0DED6] text-xs text-[#1A201C] focus:outline-none focus:border-[#557764]"
                   />
-                  <span className="text-[10px] text-[#8E9B92] mt-1 block">
-                    Recordings are permanently audited in batch traceability log.
-                  </span>
                 </div>
-              </div>
 
-              {/* Submit Button */}
-              <div className="pt-4 border-t border-[#F0EFE8]">
+                {selectedResult === 'Fail' && (
+                  <div className="p-3 bg-[#FDF0F0] rounded-xl border border-[#F7CECE] text-xs text-[#C53939] flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <span>Marking as Fail will automatically set batch {selectedCheck.batch_code} On Hold for quarantine.</span>
+                  </div>
+                )}
+
+                {saveSuccess && (
+                  <div className="p-2.5 bg-[#EDF6EE] rounded-xl border border-[#CCE5D3] text-xs text-[#2D6A4F] font-semibold flex items-center gap-1.5 animate-fade-in">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Inspection recorded successfully!</span>
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 rounded-full bg-[#557764] text-white text-xs font-semibold hover:bg-[#486756] shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 px-4 rounded-full bg-[#1A201C] text-white text-xs font-semibold hover:bg-[#323D36] transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <Save className="w-4 h-4" />
-                  <span>Save Inspection Record</span>
+                  <Save className="w-3.5 h-3.5" />
+                  Sign-off Quality Check
                 </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         ) : (
           <div className="lg:col-span-4 bg-white p-6 rounded-[24px] border border-[#E2E0D8] flex items-center justify-center text-xs text-[#8A968F]">
-            Select an inspection from the worklist to record observations.
+            Select an inspection from the worklist to view or record sign-off.
           </div>
         )}
       </div>
 
-      {/* Schedule Inspection Modal */}
+      {/* SCHEDULE NEW INSPECTION MODAL */}
       {isNewModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-[28px] max-w-md w-full p-6 border border-[#E2E0D8] shadow-2xl relative">
+            <button
+              onClick={() => setIsNewModalOpen(false)}
+              className="absolute right-5 top-5 p-1 rounded-full text-[#7B8881] hover:text-[#1A201C] hover:bg-[#F2EFE9]"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
             <h3 className="text-lg font-bold text-[#1A201C] mb-1">
               Schedule Quality Check
             </h3>
             <p className="text-xs text-[#717E76] mb-5">
-              Assign a mandatory verification check to an active batch.
+              Category: <strong>{activeCategory}</strong>. Configure verification standard.
             </p>
 
             <form onSubmit={handleScheduleInspection} className="space-y-4">
@@ -435,7 +508,7 @@ export const QualityPage: React.FC = () => {
                   onChange={(e) => setNewBatchId(e.target.value)}
                   className="w-full bg-[#FAF9F5] px-3.5 py-2.5 rounded-xl border border-[#E0DED6] text-xs font-medium text-[#1A201C] focus:outline-none focus:border-[#557764]"
                 >
-                  {batches.map((b) => (
+                  {batches.filter(b => b.category === activeCategory).map((b) => (
                     <option key={b.id} value={b.id}>
                       {b.batch_code} — {b.product_name} ({b.current_stage})
                     </option>
@@ -445,15 +518,45 @@ export const QualityPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-semibold text-[#1A201C] mb-1">
-                  Inspection Type
+                  Inspection Standard / Type
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={newCheckType}
-                  onChange={(e) => setNewCheckType(e.target.value)}
-                  className="w-full bg-[#FAF9F5] px-3.5 py-2.5 rounded-xl border border-[#E0DED6] text-xs text-[#1A201C] focus:outline-none focus:border-[#557764]"
-                />
+                {!isCustomType ? (
+                  <select
+                    value={newCheckType}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setIsCustomType(true);
+                      } else {
+                        setNewCheckType(e.target.value);
+                      }
+                    }}
+                    className="w-full bg-[#FAF9F5] px-3.5 py-2.5 rounded-xl border border-[#E0DED6] text-xs font-medium text-[#1A201C] focus:outline-none focus:border-[#557764]"
+                  >
+                    {activeWorkflow.defaultInspectionTypes.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                    <option value="__custom__">+ Enter Custom Inspection Standard...</option>
+                  </select>
+                ) : (
+                  <div className="space-y-1.5">
+                    <input
+                      type="text"
+                      autoFocus
+                      required
+                      placeholder="Enter custom testing protocol name..."
+                      value={customCheckType}
+                      onChange={(e) => setCustomCheckType(e.target.value)}
+                      className="w-full bg-[#FAF9F5] px-3.5 py-2 rounded-xl border border-[#E0DED6] text-xs text-[#1A201C]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setIsCustomType(false)}
+                      className="text-[11px] text-[#557764] hover:underline"
+                    >
+                      ← Back to preset category standards
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -461,20 +564,17 @@ export const QualityPage: React.FC = () => {
                   <label className="block text-xs font-semibold text-[#1A201C] mb-1">
                     Inspector
                   </label>
-                  <select
+                  <input
+                    type="text"
+                    required
                     value={newInspector}
                     onChange={(e) => setNewInspector(e.target.value)}
                     className="w-full bg-[#FAF9F5] px-3.5 py-2.5 rounded-xl border border-[#E0DED6] text-xs text-[#1A201C] focus:outline-none focus:border-[#557764]"
-                  >
-                    <option value="Marcus Vance">Marcus Vance</option>
-                    <option value="Elena Rostova">Elena Rostova</option>
-                    <option value="David Chen">David Chen</option>
-                  </select>
+                  />
                 </div>
-
                 <div>
                   <label className="block text-xs font-semibold text-[#1A201C] mb-1">
-                    Due Time
+                    Scheduled Due Time
                   </label>
                   <input
                     type="text"
@@ -496,7 +596,7 @@ export const QualityPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-full bg-[#557764] text-white text-xs font-semibold hover:bg-[#486756] shadow-sm"
+                  className="px-5 py-2 rounded-full bg-[#1A201C] text-white text-xs font-semibold hover:bg-[#323D36] shadow-sm"
                 >
                   Schedule Check
                 </button>
